@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="fdc0932d-2a94-4835-8c1a-c2ab6e643b64" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://177.71.195.3/uploadfile/UploadFile.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="UploadFile.xsd" MetadataType="Schema" ID="fae45e6e-5463-4997-a2a6-52527c998531" SourceId="1" SourceUrl="http://177.71.195.3/uploadfile/UploadFile.svc?xsd=xsd1" />
+    <MetadataFile FileName="UploadFile1.xsd" MetadataType="Schema" ID="f52ad151-c9f0-45ce-b354-9877fedb1d07" SourceId="1" SourceUrl="http://177.71.195.3/uploadfile/UploadFile.svc?xsd=xsd0" />
+    <MetadataFile FileName="UploadFile.wsdl" MetadataType="Wsdl" ID="038b5ac8-0ab6-4f19-9aef-11370bd33f8e" SourceId="1" SourceUrl="http://177.71.195.3/uploadfile/UploadFile.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

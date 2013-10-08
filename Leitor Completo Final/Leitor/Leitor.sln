@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leitor", "Leitor\Leitor.csproj", "{49E84686-973A-42F9-AD21-153C6D65C4FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeitorService", "LeitorService\LeitorService.csproj", "{7E23098C-A721-4589-B238-60E7ECC2AA21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TesteRegexPrefeitura", "TesteRegexPrefeitura\TesteRegexPrefeitura.csproj", "{08CC023A-066B-4734-AE73-E7C7D46EF3A8}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://gyro:8080/tfs/keeptrue
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Leitor\\Leitor.csproj
+		SccProjectName1 = Leitor
+		SccLocalPath1 = Leitor
+		SccProjectUniqueName2 = LeitorService\\LeitorService.csproj
+		SccProjectName2 = LeitorService
+		SccLocalPath2 = LeitorService
+		SccProjectUniqueName3 = TesteRegexPrefeitura\\TesteRegexPrefeitura.csproj
+		SccProjectName3 = TesteRegexPrefeitura
+		SccLocalPath3 = TesteRegexPrefeitura
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Debug|x86.ActiveCfg = Debug|x86
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Debug|x86.Build.0 = Debug|x86
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Release|x86.ActiveCfg = Release|x86
+		{49E84686-973A-42F9-AD21-153C6D65C4FF}.Release|x86.Build.0 = Release|x86
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Debug|x86.Build.0 = Debug|Any CPU
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E23098C-A721-4589-B238-60E7ECC2AA21}.Release|x86.ActiveCfg = Release|Any CPU
+		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

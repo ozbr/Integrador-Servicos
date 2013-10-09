@@ -891,5 +891,23 @@ namespace Leitor.Core
             }
             return result;
         }
+        
+        public String ObterXml(String arquivo, int idRem, string emails)
+        {
+            String result = String.Empty;
+            Remetente r = new Remetente() { Id = idRem, Emails = emails };
+
+            Parametrizar(arquivo, r);
+            
+            //if (_nota.infNFe.emit.CNPJ != null)
+            System.Xml.Serialization.XmlSerializer serializadorXml = new System.Xml.Serialization.XmlSerializer(_nota.GetType());
+
+            System.IO.MemoryStream ms = new MemoryStream();
+            serializadorXml.Serialize(ms, _nota);
+            result = System.Text.UTF8Encoding.UTF8.GetString(ms.ToArray());
+            ms.Dispose();
+
+            return result;
+        }
     }
 }

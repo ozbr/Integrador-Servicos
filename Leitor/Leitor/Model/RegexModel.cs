@@ -12,6 +12,7 @@ namespace Leitor.Model
         public string Item { get; set; }
         public Dictionary<string, string> Groups { get; set; }
         public bool IsXpath { get; set; }
+        public string Nome { get; set; }
 
         public RegexModel()
         {

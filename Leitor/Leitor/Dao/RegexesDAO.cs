@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Leitor.Model;
+using System.Collections.ObjectModel;
 
 namespace Leitor.Dao
 {
@@ -103,10 +104,14 @@ namespace Leitor.Dao
                             }
                             else
                             {
-                                result.AddRegex(dc.ColumnName,
-                                                (tb.Rows[0][dc.ColumnName] == DBNull.Value
-                                                     ? 0
-                                                     : Convert.ToInt32(tb.Rows[0][dc.ColumnName])));
+                                int iVal = 0;
+                                if (Int32.TryParse(tb.Rows[0][dc.ColumnName].ToString(), out iVal))
+                                {
+                                    result.AddRegex(dc.ColumnName,
+                                                    (tb.Rows[0][dc.ColumnName] == DBNull.Value
+                                                         ? 0
+                                                         : iVal));
+                                }
                             }
                         }
                     }
@@ -118,6 +123,51 @@ namespace Leitor.Dao
                 }
             }
 
+            return result;
+        }
+
+        public Collection<RegexModel> ListarRegexes()
+        {
+            Collection<RegexModel> result = new Collection<RegexModel>();
+            try
+            {
+                using (var cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "[ListarRegexes]";
+                    cmd.Connection = _conn;
+                    cmd.Connection.Open();
+
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            RegexModel rm = new RegexModel();
+
+                            //rm.Geral = dr["RGX_GERAL"] as string;
+                            rm.Id = (int)dr["RGX_ID"];
+                            rm.Item = dr["RGX_ITEM"] as string;
+                            rm.Nome = dr["PRE_NOME"] as string;
+                            
+                            //if (dr["RGX_ide_cUf"] != DBNull.Value)
+                            //{
+                            //    result.Groups.Add("RGX_ide_cUf", (int)dr["RGX_ide_cUf"]);
+                            //}
+                            result.Add(rm);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                _conn.Close();
+            }
+            
             return result;
         }
     }

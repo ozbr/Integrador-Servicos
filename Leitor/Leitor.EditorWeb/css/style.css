@@ -1,0 +1,36 @@
+﻿@charset "utf-8";
+/* CSS Document*/
+/*Define the body element's color*/
+body
+{background: #FFFFFF;font-size:18px;
+}
+/*This section is for links*/
+a:link
+{font-weight:normal; color:Navy
+}
+a:visited
+{font-weight:normal; color:Green;
+}
+a:hover
+{font-weight:bold; color: Red; font-variant:small-caps;
+}
+/*This section is for a paragraph section*/
+p {font-style:normal; 
+}
+blue {color:#0000FF;
+}
+/*This section is for the image's black border.*/
+img {border-color: #000000; border:thick; border-style:ridge;
+}
+.matchField {
+    display:inline-block;color:blue;
+}
+.matchWithoutField {
+    display:inline-block;color:aqua;
+}
+.boxResult {font-style:normal; font-size:12px;font-family:'Courier New'; border:double
+}
+#txtRegex {width: 700px;min-height: 100px;  
+}
+.boxXML {overflow:hidden
+}

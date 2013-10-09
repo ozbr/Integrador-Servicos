@@ -31,7 +31,7 @@ namespace Leitor
             lerArquivos();//LÊ TODOS OS ARQUIVOS RECEBIDOS
             uploadXml();
 
-            //Console.Read();
+            Console.Read();
         }
 
         #region métodos
@@ -69,7 +69,7 @@ namespace Leitor
                 String final = pd.GerarXml(arquivo, remetentes[c], "0" + c);
                 LeitorArquivos.AtualizarPrefeitura(remetentes[c], arquivo, false);
                 //LINHA RESPONSÁVEL POR ENVIAR O ARQUIVO GERADO AO WEBSERVICE
-                ////IntegracaoManager.EnviarParaWebService(final);
+                //IntegracaoManager.EnviarParaWebService(final);
             }
             #endregion
         }

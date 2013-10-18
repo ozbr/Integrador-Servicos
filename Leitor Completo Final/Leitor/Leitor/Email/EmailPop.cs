@@ -34,7 +34,7 @@ namespace Leitor.Email
 
                     // Trazer mensagens a partir do horário escolhido
                     List<Message> fetchedMessages =
-                        FetchMessagesByDateTime(match.Groups[1].Value, Convert.ToInt32(match.Groups[2].Value), false, Info.EmailAddress, Info.Password, dateTimeReceivedFilter);
+                        FetchMessagesByDateTime(match.Groups[1].Value, Convert.ToInt32(match.Groups[2].Value), Info.UseSSL, Info.EmailAddress, Info.Password, dateTimeReceivedFilter);
 
                     for (int i = fetchedMessages.Count - 1; i > -1 ; i--)
                     {
@@ -107,7 +107,7 @@ namespace Leitor.Email
             {
                 Log.SaveTxt("EmailPop.LoadEmails", e.Message, Log.LogType.Erro);
             }
-
+            
             return emails;
         }
 

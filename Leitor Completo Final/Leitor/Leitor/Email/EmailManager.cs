@@ -104,6 +104,9 @@ namespace Leitor.Email
         {
             List<EmailData> result = loader.LoadEmails();
 
+            if (result.Count > 0)
+                Log.SaveTxt("Emails Lidos: " + result.Count.ToString(), Log.LogType.Debug);
+
             foreach (EmailData ed in result)
             {
                 ReadEmail(ed);

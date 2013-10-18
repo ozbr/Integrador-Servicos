@@ -22,22 +22,30 @@ namespace Leitor
 
         private static void Main()
         {
-            bool ok = CheckUp.Start();
+            Log.SaveTxt("Start", Log.LogType.Debug);
+            bool ok = true;// CheckUp.Start();
 
             if (ok)
             {
                 EmailManager manager = new EmailManager();
                 List<IEmailLoader> emailList = new List<IEmailLoader>();
 
-                TimerCallback callbackListenEmailTask = new TimerCallback(Jobs.ListenEmailTask);
-                listenEmailTaskTimer = new Timer(callbackListenEmailTask, emailList, TimeSpan.Zero, TimeSpan.FromSeconds(60.0));
+                if (System.Configuration.ConfigurationManager.AppSettings["ExecuteOnce"] == "true")
+                {
+                    Jobs.ListenEmailTask(emailList);
+                    Jobs.ListenReadDocumentTask(null);
+                }
+                else
+                {
+                    TimerCallback callbackListenEmailTask = new TimerCallback(Jobs.ListenEmailTask);
+                    listenEmailTaskTimer = new Timer(callbackListenEmailTask, emailList, TimeSpan.Zero, TimeSpan.FromSeconds(60.0));
 
-                TimerCallback callbackListenReadDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
-                listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(30.0));
+                    TimerCallback callbackListenReadDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
+                    listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(30.0));
 
-                TimerCallback callbackListenSendDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
-                listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(60.0));
-
+                    TimerCallback callbackListenSendDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
+                    listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(60.0));
+                }
                 Console.Read();
             }
 
@@ -171,6 +179,8 @@ namespace Leitor
 
             try
             {
+                Log.SaveTxt("CheckUp.Start", "Entrando", Log.LogType.Debug);
+
                 using (SqlConnection connection = new SqlConnection(Repository._connectionString))
                 {
                     using (SqlCommand command = connection.CreateCommand())
@@ -186,9 +196,12 @@ namespace Leitor
                         success = true;
                     }
                 }
+
+                Log.SaveTxt("CheckUp.Start", "Resultado " + success.ToString(), Log.LogType.Debug);
             }
-            catch
+            catch(Exception e)
             {
+                Log.SaveTxt("Start", e.Message, Log.LogType.Erro);
                 Console.WriteLine("Impossível iniciar.");
             }
 

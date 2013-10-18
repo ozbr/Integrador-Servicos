@@ -29,6 +29,7 @@ namespace Leitor.Dao
                                               ,[EMA_URL]
                                               ,[EMA_EMAIL]
                                               ,[EMA_SENHA]
+                                              ,[EMA_USESSL]
                                               ,[EMA_DOMAIN]
                                               ,[EMA_PROVIDER]
                                               ,[EMA_DATA_RECEBIMENTO]
@@ -44,6 +45,7 @@ namespace Leitor.Dao
                                         Url = (string)dataReader["EMA_URL"],
                                         EmailAddress = (string)dataReader["EMA_EMAIL"],
                                         Password = (string)dataReader["EMA_SENHA"],
+                                        UseSSL = dataReader["EMA_USESSL"] == DBNull.Value ? false : Convert.ToBoolean(dataReader["EMA_USESSL"]),
                                         Domain = dataReader["EMA_DOMAIN"] == DBNull.Value ? null : (string)dataReader["EMA_DOMAIN"],
                                         Provider = (string)dataReader["EMA_PROVIDER"]
                                     };

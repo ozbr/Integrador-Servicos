@@ -4,6 +4,7 @@ using Leitor.Email;
 using System.Threading;
 using System.Collections.Generic;
 using System;
+using Leitor.Utilities;
 
 namespace LeitorService
 {
@@ -22,30 +23,53 @@ namespace LeitorService
         {
             base.OnStart(args);
 
-            bool ok = CheckUp.Start();
-
-            if (ok)
+            try
             {
-                Thread threadResume = new Thread(CheckUp.Retomar);
+                Log.SaveTxt("Starting", Log.LogType.Debug);
 
-                EmailManager manager = new EmailManager();
-                List<IEmailLoader> emailList = manager.GetPostalBoxes();
+                bool ok = CheckUp.Start();
 
-                TimerCallback callbackListenEmailTask = new TimerCallback(Jobs.ListenEmailTask);
-                listenEmailTaskTimer = new Timer(callbackListenEmailTask, emailList, TimeSpan.Zero, TimeSpan.FromSeconds(30.0));
+                if (ok)
+                {
+                    //Verificar a ausência do método Retomar
+                    //Thread threadResume = new Thread(CheckUp.Retomar);
 
-                TimerCallback callbackListenReadDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
-                listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+                    EmailManager manager = new EmailManager();
+                    List<IEmailLoader> emailList = manager.GetPostalBoxes();
 
-                Console.Read();
+                    TimerCallback callbackListenEmailTask = new TimerCallback(Jobs.ListenEmailTask);
+                    listenEmailTaskTimer = new Timer(callbackListenEmailTask, emailList, TimeSpan.Zero, TimeSpan.FromSeconds(30.0));
+
+                    TimerCallback callbackListenReadDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
+                    listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+
+                    Log.SaveTxt("Started", Log.LogType.Debug);
+                }
+                else
+                {
+                    Log.SaveTxt("Serviço não iniciou com sucesso e será interrompido", Log.LogType.Debug);
+                    base.Stop();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.SaveTxt("OnStart", e.Message, Log.LogType.Erro);
             }
         }
 
         protected override void OnStop()
         {
-            listenEmailTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            listenReadDocumentTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
-
+            try
+            {
+                if (listenEmailTaskTimer != null)
+                    listenEmailTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                if (listenReadDocumentTaskTimer != null)
+                    listenReadDocumentTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+            catch (Exception e)
+            {
+                Log.SaveTxt("OnStop", e.Message + e.StackTrace, Log.LogType.Erro);
+            }
             base.OnStop();
         }
     }

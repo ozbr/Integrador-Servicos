@@ -32,6 +32,12 @@ namespace Leitor.Email
             set; 
         }
 
+        public bool UseSSL
+        {
+            get;
+            set;
+        }
+
         public String Domain 
         { 
             get; 

@@ -1,5 +1,6 @@
 ﻿using Leitor.Model;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,12 +15,26 @@ namespace Leitor.Utilities
 
     public static class FileManager
     {
-        private const String _caminhoRaiz = @"C:\Leitor\";
-        private const String _caminhoPrefeituraAnexos = _caminhoRaiz + @"{0}\{1}\anexos\";
-        private const String _caminhoPrefeituraEmail = _caminhoRaiz + @"{0}\{1}\email\";
-        private const String _caminhoLote = _caminhoRaiz + @"{0}\{1}\";
-        private const String _caminhoAnexosProcessando = _caminhoRaiz + @"_AnexosProcessando\";
-        private const String _caminhoAnexosDeixados = _caminhoRaiz + @"_AnexosDeixados\";
+        
+        public static string CaminhoRaiz
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_cacheCaminhoRaiz))
+                    _cacheCaminhoRaiz = (!String.IsNullOrEmpty(ConfigurationManager.AppSettings["CaminhoRaiz"])
+                               ? ConfigurationManager.AppSettings["CaminhoRaiz"]
+                               : @"C:\Leitor\");
+                return _cacheCaminhoRaiz;
+            }
+        }
+
+
+        private static String _cacheCaminhoRaiz = null;
+        private static String _caminhoPrefeituraAnexos = CaminhoRaiz + @"{0}\{1}\anexos\";
+        private static String _caminhoPrefeituraEmail = CaminhoRaiz + @"{0}\{1}\email\";
+        private static String _caminhoLote = CaminhoRaiz + @"{0}\{1}\";
+        private static String _caminhoAnexosProcessando = CaminhoRaiz + @"_AnexosProcessando\";
+        private static String _caminhoAnexosDeixados = CaminhoRaiz + @"_AnexosDeixados\";
         
         public static String GetCaminho(CaminhoPara caminho)
         {
@@ -27,7 +42,7 @@ namespace Leitor.Utilities
 
             switch (caminho)
             {
-                case CaminhoPara.Raiz: caminhoArquivo = _caminhoRaiz; break;
+                case CaminhoPara.Raiz: caminhoArquivo = CaminhoRaiz; break;
                 case CaminhoPara.Lote: caminhoArquivo = _caminhoLote; break;
                 case CaminhoPara.PrefeituraEmail: caminhoArquivo = _caminhoPrefeituraEmail; break;
                 case CaminhoPara.PrefeituraAnexos: caminhoArquivo = _caminhoPrefeituraAnexos; break;
@@ -43,10 +58,6 @@ namespace Leitor.Utilities
             get { return _caminhoAnexosProcessando; } 
         }
 
-        public static String CaminhoRaiz 
-        { 
-            get { return _caminhoRaiz; } 
-        }
 
         /// <summary>
         /// Salva o email na pasta C:\Leitor\{Cidade}\{Data}\email

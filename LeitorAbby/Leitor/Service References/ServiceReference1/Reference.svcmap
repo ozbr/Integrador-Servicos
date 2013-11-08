@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="fdc0932d-2a94-4835-8c1a-c2ab6e643b64" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://hml.monitorefisc.com.br/wsarquivos/ConsumoArquivos.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ConsumoArquivos.xsd" MetadataType="Schema" ID="cf94d103-0d13-49ae-bdf5-f9af354bcf6f" SourceId="1" SourceUrl="http://hml.monitorefisc.com.br/wsarquivos/ConsumoArquivos.svc?xsd=xsd0" />
+    <MetadataFile FileName="UploadFile1.wsdl" MetadataType="Wsdl" ID="152e4f04-5c16-428d-9202-c7ef28afa922" SourceId="1" SourceUrl="http://hml.monitorefisc.com.br/wsarquivos/ConsumoArquivos.svc?wsdl" />
+    <MetadataFile FileName="ConsumoArquivos1.xsd" MetadataType="Schema" ID="8411ad4e-f727-4157-94a1-02733f57feb4" SourceId="1" SourceUrl="http://hml.monitorefisc.com.br/wsarquivos/ConsumoArquivos.svc?xsd=xsd1" />
+    <MetadataFile FileName="ConsumoArquivos.disco" MetadataType="Disco" ID="3e26f981-1eb3-45b2-8cc3-4e8df405d21e" SourceId="1" SourceUrl="http://hml.monitorefisc.com.br/wsarquivos/ConsumoArquivos.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

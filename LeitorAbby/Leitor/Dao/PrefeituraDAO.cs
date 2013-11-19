@@ -223,5 +223,49 @@ namespace Leitor.Dao
 
             return result;
         }
+
+        public List<TpAnexo> SelecionarPrefeituraTpAnexos(string nome)
+        {
+            List<TpAnexo> result = new List<TpAnexo>();
+            try
+            {
+                using (var cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandText = "[SelecionarPrefeituraTpAnexo]";
+                    
+                    cmd.Parameters.AddWithValue("@PRE_NOME", nome);
+                    
+                    cmd.Connection = _conn;
+                    cmd.Connection.Open();
+
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            TpAnexo tpAnexo = new TpAnexo();
+
+                            //PRE.PRE_ID, PRE.PRE_NOME, REM_RGXLINK, REM.REM_RGXSECUNDARIO, REM.REM_PARAMETRO
+                            tpAnexo.Id = (int)dr["PAN_ID"];
+                            tpAnexo.Prefeitura = (String)dr["PRE_NOME"];
+                            tpAnexo.Extensao = (String)dr["PAN_EXTENSAO"];
+                            tpAnexo.UseOCR = Convert.ToBoolean(dr["PAN_USEOCR"]);
+                            
+                            result.Add(tpAnexo);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.SaveTxt("PrefeituraDAO.SelecionarPrefeituraTpAnexos", e.Message, Log.LogType.Erro);
+            }
+            finally
+            {
+                _conn.Close();
+            }
+            return result;
+        }
     }
 }

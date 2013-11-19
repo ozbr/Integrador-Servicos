@@ -68,7 +68,8 @@ namespace Leitor.Email
                                     Directory.CreateDirectory(path);
                                 }
 
-                                string fileName = Path.GetFileNameWithoutExtension(attachment.Name) + "_P" + DateTime.Now.ToString("ddMMyyyy-hhmmssfff") + Path.GetExtension(attachment.Name);
+                                string attachmentFileName = Regex.Replace(attachment.Name,@"[^\w\-.\s]","");
+                                string fileName = Path.GetFileNameWithoutExtension(attachmentFileName) + "_P" + DateTime.Now.ToString("ddMMyyyy-hhmmssfff") + Path.GetExtension(attachmentFileName);
                                 string filePath = Path.Combine(path, fileName);
 
                                 using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write))

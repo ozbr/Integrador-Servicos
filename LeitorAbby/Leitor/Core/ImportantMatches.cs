@@ -119,7 +119,7 @@ namespace Leitor.Core
                             {
                                 command.CommandType = System.Data.CommandType.Text;
                                 command.CommandText = @"
-                            SELECT PRE_NOME, PRE_RGXLINK, PRE_RGXLINK_SECUNDARIO, PRE_RGXLINK_FORMAT, PRE_USEOCR
+                            SELECT PRE_NOME, PRE_RGXLINK, PRE_RGXLINK_SECUNDARIO, PRE_RGXLINK_FORMAT
                             FROM PREFEITURA PRE
                             WHERE PRE.PRE_RGXLINK IS NOT NULL";
 
@@ -135,8 +135,7 @@ namespace Leitor.Core
                                                     (string)reader[0], 
                                                     (string)reader[1], 
                                                     reader[2] == DBNull.Value ? null : (string)reader[2], 
-                                                    reader[3] == DBNull.Value ? null : (string)reader[3],
-                                                    reader[4] == DBNull.Value ? "0" : (Convert.ToBoolean( reader[4]) ? "1" : "0")
+                                                    reader[3] == DBNull.Value ? null : (string)reader[3]
                                                 }
                                             );
                                     }
@@ -242,12 +241,11 @@ namespace Leitor.Core
             return success;
         }
 
-        public static bool TryGetCityAndTaxDocumentUrl(out string cityName, out string[] urlParams, out string url, string messageBody, out bool useOCR)
+        public static bool TryGetCityAndTaxDocumentUrl(out string cityName, out string[] urlParams, out string url, string messageBody)
         {
             FillTaxDocUrlAssociation(false);
 
             bool success = false;
-            useOCR = false;
 
             cityName = string.Empty;
             url = string.Empty;
@@ -264,7 +262,6 @@ namespace Leitor.Core
                     cityName = _taxDocUrlAssociation[i][0];
                     url = m.Groups[1].Value;
                     urlParams = new string[] { _taxDocUrlAssociation[i][2], _taxDocUrlAssociation[i][3] };
-                    useOCR = _taxDocUrlAssociation[i][4] == "1";
                     break;
                 }
             }
@@ -272,12 +269,11 @@ namespace Leitor.Core
             return success;
         }
 
-        public static bool TryGetTaxDocumentUrl(out string url, out string[] urlParams, string cityName, string messageBody, out bool useOCR)
+        public static bool TryGetTaxDocumentUrl(out string url, out string[] urlParams, string cityName, string messageBody)
         {
             FillTaxDocUrlAssociation(false);
 
             bool success = false;
-            useOCR = false;
 
             url = string.Empty;
             urlParams = new string[0];
@@ -294,7 +290,6 @@ namespace Leitor.Core
 
                         url = m.Groups[1].Value.Replace("&amp;","&");
                         urlParams = new string[] { _taxDocUrlAssociation[i][2], _taxDocUrlAssociation[i][3] };
-                        useOCR = _taxDocUrlAssociation[i][4] == "1";
                     }
                 }
             }

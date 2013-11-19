@@ -55,5 +55,11 @@ namespace Leitor.Email
             get; 
             set; 
         }
+
+        public string ConsumoServicoURL
+        {
+            get;
+            set;
+        }
     }
 }

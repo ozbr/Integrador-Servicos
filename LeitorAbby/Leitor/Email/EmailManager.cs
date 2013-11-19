@@ -69,6 +69,7 @@ namespace Leitor.Email
                         emailList[i].Info.Password = ei.Password;
                         emailList[i].Info.EmailAddress = ei.EmailAddress;
                         emailList[i].Info.Domain = ei.Domain;
+                        emailList[i].Info.Id = ei.Id;
                         break;
                     }
                 }
@@ -95,6 +96,15 @@ namespace Leitor.Email
 
                             emailList.Add(loader);
                             break;
+                        case "FOLDER":
+                            loader = new EmailFolder
+                            {
+                                Info = ei,
+                                RequestDate = ei.LastReceipt
+                            };
+
+                            emailList.Add(loader);
+                            break;
                     }
                 }
             }
@@ -109,6 +119,7 @@ namespace Leitor.Email
 
             foreach (EmailData ed in result)
             {
+                ed.IdEnderecoEmail = loader.Info.Id;
                 ReadEmail(ed);
             }
         }
@@ -119,7 +130,6 @@ namespace Leitor.Email
 
             Boolean sucesso;
             string caminhoDiretorioDestino = string.Empty;
-            Boolean useOCR = false; // Alterar para definir por prefeitura e tipo de anexo.
 
             sucesso = ImportantMatches.TryGetCity(out prefeitura, email.Remetente, email.RemetentesPotenciais.ToArray());
             
@@ -130,7 +140,7 @@ namespace Leitor.Email
                 string url;
                 string[] parametrosUrl;
 
-                sucesso = ImportantMatches.TryGetTaxDocumentUrl(out url, out parametrosUrl, email.Prefeitura, email.Corpo, out useOCR);
+                sucesso = ImportantMatches.TryGetTaxDocumentUrl(out url, out parametrosUrl, email.Prefeitura, email.Corpo);
                 
                 if (sucesso)
                 {
@@ -142,7 +152,7 @@ namespace Leitor.Email
                 string url;
                 string[] parametrosUrl;
 
-                sucesso = ImportantMatches.TryGetCityAndTaxDocumentUrl(out prefeitura, out parametrosUrl, out url, email.Corpo, out useOCR);
+                sucesso = ImportantMatches.TryGetCityAndTaxDocumentUrl(out prefeitura, out parametrosUrl, out url, email.Corpo);
 
                 if (sucesso)
                 {
@@ -179,33 +189,62 @@ namespace Leitor.Email
             {
                 Leitor.Helper.FlowStatus initialStatus = Helper.FlowStatus.Downloaded;
 
+                var tpAnexos = new PrefeituraDAO().SelecionarPrefeituraTpAnexos(email.Prefeitura);
+
                 for (int i = 0; i < email.Anexos.Count; i++)
                 {
+                    var ext = Path.GetExtension(email.Anexos[i].NomeArquivo).TrimStart('.').ToUpper();
+                    var tpAnexo = (from tp in tpAnexos where tp.Extensao.ToUpper() == ext select tp).FirstOrDefault<TpAnexo>();
                     
+                    if (tpAnexo == null)
+                        tpAnexo = (from tp in tpAnexos where tp.Extensao == "*" select tp).FirstOrDefault<TpAnexo>();
+
+                    if (tpAnexo == null)
+                    {
+                        tpAnexo = new TpAnexo();
+                        initialStatus = Helper.FlowStatus.Stored;
+                    }
+
+                    //string originalPath
+                    //if (Directory.Exists(Path.Combine(Path.GetDirectoryName(email.Anexos[i].CaminhoArquivo), "Original")))
+                    //{
+                        
+                    //}
+
                     if (!String.IsNullOrEmpty(email.Prefeitura))
                     {
-                        caminhoDiretorioDestino = String.Format(FileManager.GetCaminho(CaminhoPara.PrefeituraAnexos), email.Prefeitura, email.Data.ToString("dd-MM-yyyy hh-mm-ss"));
+                        email.CaminhoLote = String.Format(FileManager.GetCaminho(CaminhoPara.Lote), email.Prefeitura, email.Data.ToString("dd-MM-yyyy hh-mm-ss"));
+                        int ind = 0;
+                        while (Directory.Exists(email.CaminhoLote))
+                            email.CaminhoLote = String.Format(FileManager.GetCaminho(CaminhoPara.Lote), email.Prefeitura, email.Data.ToString("dd-MM-yyyy hh-mm-ss") + "_" + (++ind).ToString());
                     }
                     else
                     {
-                        caminhoDiretorioDestino = String.Format(FileManager.GetCaminho(CaminhoPara.AnexosDeixados));
+                        email.CaminhoLote = String.Format(FileManager.GetCaminho(CaminhoPara.AnexosDeixados));
                     }
 
+
+                    caminhoDiretorioDestino = Path.Combine(email.CaminhoLote, @"anexos\");
+                    
                     if (!Directory.Exists(caminhoDiretorioDestino))
                     {
                         Directory.CreateDirectory(caminhoDiretorioDestino);
                     }
 
+                    //Move o arquivo para a pasta de anexos
                     string caminhoArquivoDestino = Path.Combine(caminhoDiretorioDestino, Path.GetFileName(email.Anexos[i].CaminhoArquivo));
-
                     File.Move(email.Anexos[i].CaminhoArquivo, caminhoArquivoDestino);
-
                     email.Anexos[i].CaminhoArquivo = caminhoArquivoDestino;
 
-                    email.CaminhoLote = String.Format(FileManager.GetCaminho(CaminhoPara.Lote), email.Prefeitura, email.Data.ToString("dd-MM-yyyy hh-mm-ss"));
+                    if (!string.IsNullOrEmpty(email.Anexos[i].CaminhoOriginalOCR))
+                    {
+                        //Move o anexo identificado como arquivo original para a pasta de anexos do email
+                        string caminhoArquivoOriginalDestino = Path.Combine(caminhoDiretorioDestino, Path.GetFileNameWithoutExtension(email.Anexos[i].CaminhoArquivo) + Path.GetExtension(email.Anexos[i].CaminhoOriginalOCR));
+                        File.Move(email.Anexos[i].CaminhoOriginalOCR, caminhoArquivoOriginalDestino);
+                        email.Anexos[i].CaminhoOriginalOCR = caminhoArquivoOriginalDestino;
+                    }
 
-
-                    if (useOCR)
+                    if (tpAnexo.UseOCR)
                     {
                         string ocrFilePath = FileManager.CaminhoOCR_Input.Replace("[PREFEITURA]", email.Prefeitura);
                         if (!Directory.Exists(ocrFilePath))

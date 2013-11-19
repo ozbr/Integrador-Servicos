@@ -28,6 +28,7 @@ namespace Leitor.Dao
                     cmd.Parameters.AddWithValue("@EDA_ASSUNTO", email.Assunto);
                     cmd.Parameters.AddWithValue("@EDA_LOCAL_LOTE", email.CaminhoLote);
                     cmd.Parameters.AddWithValue("@EDA_STATUS", (int)initialStatus);
+                    cmd.Parameters.AddWithValue("@EMA_ID", email.IdEnderecoEmail);
 
                     cmd.Connection = _conn;
                     cmd.Connection.Open();
@@ -39,6 +40,7 @@ namespace Leitor.Dao
                     sb.Append(@"    DECLARE @EDA_ID int = {0}
                                     DECLARE @ARQ_NOME nvarchar(MAX)
                                     DECLARE @ARQ_OCRCONTROLE varchar(255)
+                                    DECLARE @ARQ_LOCAL_ORIGINAL_OCR varchar(255)
                                     DECLARE @ARQ_LOCAL nvarchar(MAX)");
 
                     for (int i = 0; i < email.Anexos.Count; i++)
@@ -47,9 +49,10 @@ namespace Leitor.Dao
                         sb.Append(@"
                                       SET @ARQ_NOME = '").Append(email.Anexos[i].NomeArquivo).Append(@"'
                                       SET @ARQ_LOCAL = '").Append(email.Anexos[i].CaminhoArquivo).Append(@"'
+                                      SET @ARQ_LOCAL_ORIGINAL_OCR = '").Append(email.Anexos[i].CaminhoOriginalOCR).Append(@"'
                                       SET @ARQ_OCRCONTROLE = ").Append(controleOCR).Append(@"
-                                      INSERT INTO ARQUIVO (EDA_ID, ARQ_NOME, ARQ_LOCAL, ARQ_DATACRIACAO, ARQ_OCRCONTROLE)
-                                      VALUES (@EDA_ID, @ARQ_NOME, @ARQ_LOCAL, GETDATE(), @ARQ_OCRCONTROLE)");
+                                      INSERT INTO ARQUIVO (EDA_ID, ARQ_NOME, ARQ_LOCAL, ARQ_DATACRIACAO, ARQ_OCRCONTROLE, ARQ_LOCAL_ORIGINAL_OCR)
+                                      VALUES (@EDA_ID, @ARQ_NOME, @ARQ_LOCAL, GETDATE(), @ARQ_OCRCONTROLE, @ARQ_LOCAL_ORIGINAL_OCR)");
                     }
 
                     cmd.CommandType = System.Data.CommandType.Text;
@@ -131,7 +134,7 @@ namespace Leitor.Dao
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.CommandText = @"
-	                        SELECT EDA.EDA_ID, EDA.EDA_ASSUNTO, EDA.EDA_LOCAL_LOTE, ARQ.ARQ_LOCAL, ARQ.ARQ_NOME, PRE.PRE_ID, PRE.PRE_NOME, PRE.PRE_RGXLINK, PRE.PRE_RGXLINK_SECUNDARIO, PRE.PRE_RGXLINK_FORMAT, ARQ.ARQ_LOCAL_ORIGINAL_OCR
+	                        SELECT EDA.EDA_ID, EDA.EDA_ASSUNTO, EDA.EDA_LOCAL_LOTE, ARQ.ARQ_LOCAL, ARQ.ARQ_NOME, PRE.PRE_ID, PRE.PRE_NOME, PRE.PRE_RGXLINK, PRE.PRE_RGXLINK_SECUNDARIO, PRE.PRE_RGXLINK_FORMAT, ARQ.ARQ_LOCAL_ORIGINAL_OCR, EDA.EMA_ID
 	                        INTO #PROCESSAMENTO
 							FROM EMAIL_DATA EDA
 	                        INNER JOIN PREFEITURA PRE ON PRE.PRE_ID = EDA.PRE_ID
@@ -163,8 +166,8 @@ namespace Leitor.Dao
                                 email.Prefeitura = dataReader["PRE_NOME"] == DBNull.Value ? null : (string)dataReader["PRE_NOME"];
                                 email.Id = (int)dataReader["EDA_ID"];
                                 email.CaminhoLote = (string)dataReader["EDA_LOCAL_LOTE"];
-                                email.Anexos.Add(new Anexo() { NomeArquivo = (string)dataReader["ARQ_NOME"], CaminhoArquivo = (string)dataReader["ARQ_LOCAL"], CaminhoOriginalOCR = (string)dataReader["ARQ_LOCAL_ORIGINAL_OCR"] });
-
+                                email.Anexos.Add(new Anexo() { NomeArquivo = dataReader["ARQ_NOME"].ToString(), CaminhoArquivo = dataReader["ARQ_LOCAL"].ToString(), CaminhoOriginalOCR = dataReader["ARQ_LOCAL_ORIGINAL_OCR"].ToString() });
+                                email.IdEnderecoEmail = dataReader["EMA_ID"] == DBNull.Value ? 0 : Convert.ToInt32(dataReader["EMA_ID"]);
                                 Prefeitura prefeitura = new Prefeitura();
 
                                 prefeitura.Id = (int)dataReader["PRE_ID"];

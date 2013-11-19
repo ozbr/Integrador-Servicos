@@ -17,7 +17,23 @@ namespace Leitor.Core
         public static void EnviarParaWebService(String path, EmailData email)
         {
             EmailDataDAO dao = new EmailDataDAO();
-            ConsumoArquivosClient consumo = new ConsumoArquivosClient();
+                        
+            EmailDAO emailDao = new EmailDAO();
+
+            ConsumoArquivosClient consumo = null;
+            
+            if (email.IdEnderecoEmail != 0)
+            {
+                Leitor.Email.EmailInfo ema = emailDao.GetCaixasPostaisPorId(email.IdEnderecoEmail);
+                
+                if (ema != null && !string.IsNullOrEmpty(ema.ConsumoServicoURL))
+                {
+                    consumo = new ConsumoArquivosClient("Basic1_IConsumoArquivos", ema.ConsumoServicoURL);
+                }
+            }
+            
+            if (consumo == null)
+                consumo = new ConsumoArquivosClient();
 
             object[] state = new object[3];
             state[0] = path;
@@ -55,6 +71,7 @@ namespace Leitor.Core
             catch (Exception ex)
             {
                 Log.SaveTxt("Falha ao enviar nota. " + ex.Message, "Nota: " + path, Log.LogType.Erro);
+                Console.WriteLine("ERRO: " + ex.Message);
             }
         }
 

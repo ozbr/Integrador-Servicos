@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{49E84686-973A-42F9-AD21-153C6D65C4FF}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Leitor</RootNamespace>
     <AssemblyName>Leitor</AssemblyName>
@@ -163,13 +163,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckUp.cs" />
     <Compile Include="Core\EnsureTaxDocument.cs" />
     <Compile Include="Core\ImportantMatches.cs" />
     <Compile Include="Core\Repository.cs" />
     <Compile Include="Document\DocumentXml.cs" />
     <Compile Include="Document\DocumentLoader.cs" />
+    <Compile Include="Email\EmailFolder.cs" />
     <Compile Include="Helper\Enumerations.cs" />
+    <Compile Include="Jobs.cs" />
     <Compile Include="Launcher.cs" />
+    <Compile Include="Model\TpAnexo.cs" />
     <Compile Include="Tools\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="Utilities\ConversorPdf.cs" />
     <Compile Include="Dao\EmailDAO.cs" />

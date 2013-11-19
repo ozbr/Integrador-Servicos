@@ -8,6 +8,7 @@ using Leitor.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.Globalization;
 
 namespace Leitor.Document
 {
@@ -47,8 +48,20 @@ namespace Leitor.Document
             get { return _prefeitura; }
             set { _prefeitura = value; }
         }
-                
+
+        private CultureInfo _documentCulture;
+
+        public CultureInfo DocumentCulture
+        {
+            get { return _documentCulture; }
+            set { _documentCulture = value; }
+        }
         #endregion
+
+        public DocumentXml()
+        {
+            _documentCulture = new CultureInfo("pt-BR");
+        }
 
         public NF Read()
         {
@@ -66,7 +79,20 @@ namespace Leitor.Document
                     doc.Load(Local);
                     //TODO 
                     //doc.Load(String.Format(ArquivosManager.LocalArquivos, r.Emails) + "pagina.html");
+                    
+                    var chaveProt = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_protNFe_infProt_chNFe")));
+                    if (!string.IsNullOrEmpty(chaveProt))
+                    {
+                        //Está hard code mas precisa criar parametrização
+                        string codBarra  = Util.LimpaCampos(XpathSingleNode(doc, "//*/_CodigoBarra"));
+                        if (!string.IsNullOrEmpty(codBarra))
+                            chaveProt = codBarra;
 
+                        _nota.protNFe.infProt.chNFe = chaveProt;
+
+                        break;
+                    }
+                    
                     //ver se funciona com um, depois aplicar nos demais
                     _nota.infNFe.ide.nNF = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ide_nNF"));
 
@@ -309,33 +335,46 @@ namespace Leitor.Document
             {
                 try
                 {
-                    if (xpath.Contains("#"))
+
+                    string[] aux = xpath.Split('#');
+
+                    var node = doc.DocumentElement.SelectSingleNode(aux[0]);
+                    if (node != null)
+                        result = node.InnerText.Trim();
+
+                    switch (aux.Length)
                     {
-                        string[] aux = new string[3];
-                        aux[0] = xpath.Split('#')[0];
-                        aux[1] = xpath.Split('#')[1];
-                        aux[2] = xpath.Split('#')[2];
-                        if(!String.IsNullOrEmpty(aux[0]) || !String.IsNullOrEmpty(aux[1]) || !String.IsNullOrEmpty(aux[2]))
-                        {
-                            var node = doc.DocumentElement.SelectSingleNode(aux[0]);
-                            if(node != null)
-                            {   
-                                Match m = Regex.Match(node.InnerText.Trim(), aux[1], RegexOptions.Singleline);
-                                if (m.Success)
+                        case 2:
+                            if (aux[1] == "OCRNUMBER")
+                            {
+                                //Efetua tratamento para leitura de números reconhecidos por OCR, que costuma confundir pontos e vírgulas e também incluir os carascteres de moeda.
+                                result = FormatOCRNumber(result);
+                            }
+                            break;
+                        case 3:
+                        case 4:
+                            if (!String.IsNullOrEmpty(result) && !String.IsNullOrEmpty(aux[1]) && !String.IsNullOrEmpty(aux[2]))
+                            {
+                                if (node != null)
                                 {
-                                    result = m.Groups[Convert.ToInt32(aux[2])].Value;
+                                    Match m = Regex.Match(result, aux[1], RegexOptions.Singleline);
+                                    if (m.Success)
+                                        result = m.Groups[Convert.ToInt32(aux[2])].Value;
+                                    else
+                                        result = string.Empty;
+
                                 }
                             }
-                        }
-                    }
-                    else
-                    {
-                        var aux = doc.DocumentElement.SelectSingleNode(xpath);
-                        if (aux != null)
-                        {
-                            result = aux.InnerText.Trim();
-                        }
-                    }
+                            if (aux.Length == 4)
+                            {
+                                if (aux[3] == "OCRNUMBER")
+                                    result = FormatOCRNumber(result);
+                            }
+                            break;
+                        default:
+                            break;
+                    }                  
+
                 }
                 catch (Exception e)
                 {
@@ -348,6 +387,30 @@ namespace Leitor.Document
                     result = HttpUtility.HtmlDecode(result);
                 if (Prefeitura.Nome.Contains("PIRASS"))
                     result = Encoding.UTF8.GetString(Encoding.Default.GetBytes(result));
+            }
+            return result;
+        }
+
+        private string FormatOCRNumber(string result)
+        {
+
+            result = Regex.Replace(result, @"[^\d.,]", string.Empty);
+
+            var valLimpo = Regex.Replace(result, @"[^\d.,]", "").Replace(",", ".");
+
+            bool hasDecimal = false;
+
+            if (valLimpo.LastIndexOf('.') == valLimpo.Length - 3)
+                hasDecimal = true;
+
+            valLimpo = valLimpo.Replace(".", "");
+            if (valLimpo.Length > 0)
+            {
+                decimal dVal = Int32.Parse(valLimpo);
+                if (hasDecimal)
+                    dVal = dVal / 100;
+
+                result = dVal.ToString(this.DocumentCulture);
             }
             return result;
         }

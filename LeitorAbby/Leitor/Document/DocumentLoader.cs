@@ -56,8 +56,10 @@ namespace Leitor.Document
                             var originalFileName = (from anexo in Email.Anexos
                                                       where anexo.CaminhoArquivo == document.Local
                                                       select anexo.CaminhoOriginalOCR).FirstOrDefault<string>();
+                            if (string.IsNullOrEmpty(originalFileName))
+                                originalFileName = document.Local;
 
-                            String local = LotManager.CreateLot(Prefeitura, Email, originalFileName ?? document.Local, result, "E");
+                            String local = LotManager.CreateLot(Prefeitura, Email, originalFileName, result, "E");
                             new EmailDataDAO().AtualizarLocalLote(Email);
                             IntegracaoManager.EnviarParaWebService(local, Email);
                         }

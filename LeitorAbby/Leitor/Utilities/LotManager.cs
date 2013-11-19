@@ -62,11 +62,13 @@ namespace Leitor.Utilities
             {
                 Directory.CreateDirectory(local);
             }
+            string cnpj = string.IsNullOrEmpty(nf.infNFe.emit.CNPJ) ? new string('0',14) : nf.infNFe.emit.CNPJ;
+
             //ALTERADO PELA PRESENÇA DE MAIS DE UMA NF POR EMAIL
             String numeroLote = e.Data.ToString("MMddhh") + DateTime.Now.ToString("ffff");
-            String nomeZip = Lote(numeroLote, nf.infNFe.emit.CNPJ, "02") + ".zip";
-            String nomeArquivo = BaseLocal(numeroLote, nf.infNFe.emit.CNPJ, Util.validateEouS(EouS), "001") + ".xml";
-            String nomePdf = BaseLocal(numeroLote, nf.infNFe.emit.CNPJ, Util.validateEouS(EouS), "001");
+            String nomeZip = Lote(numeroLote, cnpj, "02") + ".zip";
+            String nomeArquivo = BaseLocal(numeroLote, cnpj, Util.validateEouS(EouS), "001") + ".xml";
+            String nomePdf = BaseLocal(numeroLote, cnpj, Util.validateEouS(EouS), "001");
 
             System.Xml.Serialization.XmlSerializer serializadorXml = new System.Xml.Serialization.XmlSerializer(nf.GetType());
 

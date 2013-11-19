@@ -16,6 +16,7 @@ namespace Leitor.Helper
         SendQueue = 5,
         Sending = 6,
         Sent = 7,
-        OCR = 10
+        OCR = 10,
+        Stored = 11
     }
 }

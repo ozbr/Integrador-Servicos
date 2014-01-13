@@ -20,7 +20,7 @@ namespace Leitor.Dao
         private static readonly string LogFile = LogPath + "Log" + DateTime.Today.ToString("yyyyMMdd") + "{0}.txt";
         private const string LogMessage = "{0}\t|{1}\t|{2};";
 
-        public bool InserirLog(string mensagem, string remetente, string assunto, string corpo)
+        public bool InserirLog(string mensagem, string remetente, string assunto, string corpo, int idEnderecoEmail)
         {
             int result = -1;
 
@@ -29,8 +29,8 @@ namespace Leitor.Dao
                 using (var cmd = _conn.CreateCommand())
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.CommandText = @"INSERT INTO LOG (LOG_DATA, LOG_METODO, LOG_AVISO, LOG_REMETENTE, LOG_ASSUNTO, LOG_CORPO)
-                                        VALUES (@LOG_DATA, @LOG_METODO, @LOG_AVISO, @LOG_REMETENTE, @LOG_ASSUNTO, @LOG_CORPO)";
+                    cmd.CommandText = @"INSERT INTO LOG (LOG_DATA, LOG_METODO, LOG_AVISO, LOG_REMETENTE, LOG_ASSUNTO, LOG_CORPO, EMA_ID)
+                                        VALUES (@LOG_DATA, @LOG_METODO, @LOG_AVISO, @LOG_REMETENTE, @LOG_ASSUNTO, @LOG_CORPO, @EMA_ID)";
 
                     cmd.Parameters.AddWithValue("@LOG_DATA", DateTime.Now);
                     cmd.Parameters.AddWithValue("@LOG_METODO", new StackTrace().GetFrame(1).GetMethod().Name);
@@ -38,6 +38,7 @@ namespace Leitor.Dao
                     cmd.Parameters.AddWithValue("@LOG_REMETENTE", remetente );
                     cmd.Parameters.AddWithValue("@LOG_ASSUNTO", assunto);
                     cmd.Parameters.AddWithValue("@LOG_CORPO", corpo);
+                    cmd.Parameters.AddWithValue("@EMA_ID", idEnderecoEmail);
 
                     cmd.Connection = _conn;
                     cmd.Connection.Open();

@@ -12,6 +12,7 @@ namespace LeitorService
     {
         private static Timer listenEmailTaskTimer;
         private static Timer listenReadDocumentTaskTimer;
+        private static Timer listenSendDocumentTaskTimer;
 
         public LeitorNFeService()
         {
@@ -28,11 +29,12 @@ namespace LeitorService
                 Log.SaveTxt("Starting", Log.LogType.Debug);
 
                 bool ok = CheckUp.Start();
+                Jobs.ListenSendDocumentTask(null);
 
                 if (ok)
                 {
                     //Verificar a ausência do método Retomar
-                    //Thread threadResume = new Thread(CheckUp.Retomar);
+                    //Thread threadResume = new Thread(CheckUp.Retomar);   
 
                     EmailManager manager = new EmailManager();
                     List<IEmailLoader> emailList = manager.GetPostalBoxes();
@@ -42,6 +44,9 @@ namespace LeitorService
 
                     TimerCallback callbackListenReadDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
                     listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+
+                    TimerCallback callbackListenSendDocumentTask = new TimerCallback(Jobs.ListenSendDocumentTask);
+                    listenSendDocumentTaskTimer = new Timer(callbackListenSendDocumentTask, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(30));
 
                     Log.SaveTxt("Started", Log.LogType.Debug);
                 }
@@ -65,6 +70,8 @@ namespace LeitorService
                     listenEmailTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 if (listenReadDocumentTaskTimer != null)
                     listenReadDocumentTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                if(listenSendDocumentTaskTimer != null)
+                    listenSendDocumentTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
             catch (Exception e)
             {

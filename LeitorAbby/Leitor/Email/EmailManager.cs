@@ -126,6 +126,8 @@ namespace Leitor.Email
 
         private void ReadEmail(EmailData email)
         {
+            Log.SaveTxt("Lendo Email: " + email.Assunto, Log.LogType.Debug);
+
             String prefeitura;
 
             Boolean sucesso;
@@ -264,7 +266,7 @@ namespace Leitor.Email
             else
             {
                 LogDAO dao = new LogDAO();
-                dao.InserirLog("Não foram encontrados notas fiscais.", email.Remetente, email.Assunto, email.Corpo);
+                dao.InserirLog("Não foram encontrados notas fiscais.", email.Remetente, email.Assunto, email.Corpo, email.IdEnderecoEmail);
             }
         }
     }

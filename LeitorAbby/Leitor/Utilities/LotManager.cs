@@ -93,7 +93,8 @@ namespace Leitor.Utilities
                 {
                     lock(lockObject)
                     {
-                        HtmlToPdf.ConvertUrl(arquivoSalvo, novoNome);
+                        if (!ConversorPdf.ConvertImageToPDF(arquivoSalvo, novoNome))
+                            HtmlToPdf.ConvertUrl(arquivoSalvo, novoNome);
                     }
                 }
 

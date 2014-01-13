@@ -84,11 +84,11 @@ namespace Leitor
         {
             if (Directory.Exists(FileManager.CaminhoOCR_Output))
             {
-                ReadFolderTreeOutputOCR(FileManager.CaminhoOCR_Output);
+                ReadFolderTreeOutputOCR(FileManager.CaminhoOCR_Output, false);
             }
         }
 
-        private static void ReadFolderTreeOutputOCR(string directory)
+        private static void ReadFolderTreeOutputOCR(string directory, bool recursive)
         {
             foreach (var fileName in Directory.GetFiles(directory))
             {
@@ -110,7 +110,8 @@ namespace Leitor
             }
             foreach (var dir in Directory.GetDirectories(directory))
             {
-                ReadFolderTreeOutputOCR(dir);
+                if (recursive)
+                    ReadFolderTreeOutputOCR(dir, recursive);
             }
         }
 

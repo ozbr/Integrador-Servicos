@@ -143,21 +143,28 @@ namespace Leitor.Email
                 // Most servers give the latest message the highest number
                 for (int i = messageCount; i > 0; i--)
                 {
-                    var message = client.GetMessage(i);
+                    try
+                    {
+                        var message = client.GetMessage(i);
 
-                    // Atualizar horário do último Request
-                    if (i == messageCount)
-                    {
-                        LastRequestStartedOn = message.Headers.DateSent.ToLocalTime();
-                    }
+                        // Atualizar horário do último Request
+                        if (i == messageCount)
+                        {
+                            LastRequestStartedOn = message.Headers.DateSent.ToLocalTime();
+                        }
 
-                    if (DateTime.Compare(message.Headers.DateSent.ToLocalTime(), date) > 0)
-                    {
-                        fetchedMessages.Add(message);
+                        if (DateTime.Compare(message.Headers.DateSent.ToLocalTime(), date) > 0)
+                        {
+                            fetchedMessages.Add(message);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        break;
+                        Log.SaveTxt("EmailPop.FetchMessagesByDateTime", "Erro ao Obter Email - " + e.Message, Log.LogType.Erro);
                     }
                 }
 

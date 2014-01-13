@@ -1,4 +1,6 @@
-﻿using Leitor;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Leitor;
 using Leitor.Dao;
 using Leitor.Document;
 using Leitor.Email;
@@ -20,6 +22,7 @@ namespace TesteRegexPrefeitura
 
         static void Main(string[] args)
         {
+
             //string local = @"C:\temp\B_11112013-101413186.xml";
 
             //var document = new DocumentXml

@@ -1,5 +1,6 @@
 ﻿using System;
 using iTextSharp.text.pdf;
+using iTextSharp.text;
 
 namespace Leitor.Utilities
 {
@@ -218,5 +219,26 @@ namespace Leitor.Utilities
         }
 
         #endregion
+
+        public static bool ConvertImageToPDF(string fileImage, string pdfFileName)
+        {
+            try
+            {
+                iTextSharp.text.Document doc = new iTextSharp.text.Document();
+                PdfWriter.GetInstance(doc, new System.IO.FileStream(pdfFileName, System.IO.FileMode.Create));
+                doc.Open();
+                Image i = Image.GetInstance(fileImage);
+                i.SetAbsolutePosition(0, 0);
+                i.ScaleToFit(doc.PageSize);
+                doc.Add(i);
+                doc.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

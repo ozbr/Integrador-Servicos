@@ -328,7 +328,7 @@ namespace Leitor.Document
         /*
          * ALTERADO 16/07 POR MATEUS: UNICO METÓDO PARA XPATH E XPATHREGEX
          */
-        private String XpathSingleNode(XmlDocument doc, string xpath)
+        public String XpathSingleNode(XmlDocument doc, string xpath)
         {
             string result = "";
             if (!string.IsNullOrEmpty(xpath))

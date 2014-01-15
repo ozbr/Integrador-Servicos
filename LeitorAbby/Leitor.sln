@@ -7,22 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeitorService", "LeitorServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TesteRegexPrefeitura", "TesteRegexPrefeitura\TesteRegexPrefeitura.csproj", "{08CC023A-066B-4734-AE73-E7C7D46EF3A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorLayout", "EditorLayout\EditorLayout.csproj", "{4BE50E34-313D-4DF0-8B95-825E9233ED03}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://gyro:8080/tfs/keeptrue
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Leitor\\Leitor.csproj
-		SccProjectName1 = Leitor
-		SccLocalPath1 = Leitor
-		SccProjectUniqueName2 = LeitorService\\LeitorService.csproj
-		SccProjectName2 = LeitorService
-		SccLocalPath2 = LeitorService
-		SccProjectUniqueName3 = TesteRegexPrefeitura\\TesteRegexPrefeitura.csproj
-		SccProjectName3 = TesteRegexPrefeitura
-		SccLocalPath3 = TesteRegexPrefeitura
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -51,6 +38,12 @@ Global
 		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08CC023A-066B-4734-AE73-E7C7D46EF3A8}.Release|x86.ActiveCfg = Release|Any CPU
+		{4BE50E34-313D-4DF0-8B95-825E9233ED03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE50E34-313D-4DF0-8B95-825E9233ED03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE50E34-313D-4DF0-8B95-825E9233ED03}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4BE50E34-313D-4DF0-8B95-825E9233ED03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE50E34-313D-4DF0-8B95-825E9233ED03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE50E34-313D-4DF0-8B95-825E9233ED03}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

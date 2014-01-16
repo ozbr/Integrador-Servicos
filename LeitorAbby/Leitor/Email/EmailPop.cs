@@ -19,7 +19,7 @@ namespace Leitor.Email
 {
     public class EmailPop : IEmailLoader
     {
-        public List<Model.EmailData> LoadEmails()
+        public List<Model.EmailData> LoadEmails(ReadEmailHandler readHandler)
         {
             List<EmailData> emails = new List<EmailData>();
 
@@ -34,70 +34,8 @@ namespace Leitor.Email
 
                     // Trazer mensagens a partir do horário escolhido
                     List<Message> fetchedMessages =
-                        FetchMessagesByDateTime(match.Groups[1].Value, Convert.ToInt32(match.Groups[2].Value), Info.UseSSL, Info.EmailAddress, Info.Password, dateTimeReceivedFilter);
+                        FetchMessagesByDateTime(match.Groups[1].Value, Convert.ToInt32(match.Groups[2].Value), Info.UseSSL, Info.EmailAddress, Info.Password, dateTimeReceivedFilter, readHandler);
 
-                    for (int i = fetchedMessages.Count - 1; i > -1 ; i--)
-                    {
-                        Message message = fetchedMessages[i];
-                        MailMessage mailMessage = message.ToMailMessage();
-
-                        // Guardar possíveis remetentes no corpo do email (caso algum seja encaminhado)
-                        List<String> remetentePotencial = new List<String>();
-
-                        if (mailMessage.IsBodyHtml)
-                        {
-                            MatchCollection mCollection = Regex.Matches(mailMessage.Body.ToString(), @"(?i)(?:De|From):.*?(\b[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}\b)");
-
-                            for (int x = 0; x < mCollection.Count; x++)
-                            {
-                                remetentePotencial.Add(mCollection[x].Groups[1].Value.ToLower());
-                            }
-                        }
-
-                        // Guardar informações dos anexos
-                        List<Anexo> informacaoAnexos = new List<Anexo>();
-
-                        string path = FileManager.GetCaminho(CaminhoPara.AnexosProcessando);
-
-                        foreach (System.Net.Mail.Attachment attachment in mailMessage.Attachments)
-                        {
-                            if (attachment.ContentType.ToString().ToLower().Contains("pdf"))
-                            {
-                                if (!Directory.Exists(path))
-                                {
-                                    Directory.CreateDirectory(path);
-                                }
-
-                                string attachmentFileName = Regex.Replace(attachment.Name,@"[^\w\-.\s]","");
-                                string fileName = Path.GetFileNameWithoutExtension(attachmentFileName) + "_P" + DateTime.Now.ToString("ddMMyyyy-hhmmssfff") + Path.GetExtension(attachmentFileName);
-                                string filePath = Path.Combine(path, fileName);
-
-                                using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write))
-                                {
-                                    byte[] allBytes = new byte[attachment.ContentStream.Length];
-                                    int bytesRead = attachment.ContentStream.Read(allBytes, 0, (int)attachment.ContentStream.Length);
-
-                                    fileStream.Write(allBytes, 0, bytesRead);
-                                    fileStream.Flush();
-                                }
-
-                                informacaoAnexos.Add(new Anexo { CaminhoArquivo = filePath, NomeArquivo = Path.GetFileName(filePath) });
-
-                                Log.SaveTxt("EmailExchange.LoadEmails", "Anexo armazenado: " + filePath, Log.LogType.Processo);
-                            }
-                        }
-
-                        emails.Add(new EmailData()
-                        {
-                            Anexos = informacaoAnexos,
-                            Assunto = message.Headers.Subject,
-                            Corpo = mailMessage.Body,
-                            Data = message.Headers.DateSent.ToLocalTime(),
-                            IdEnderecoEmail = Info.Id,
-                            Remetente = mailMessage.From.Address.ToString(),
-                            RemetentesPotenciais = remetentePotencial
-                        });
-                    }
                 }
                 else
                 {
@@ -121,8 +59,9 @@ namespace Leitor.Email
         /// <param name="username">Username of the user on the server</param>
         /// <param name="password">Password of the user on the server</param>
         /// <returns>All Messages on the POP3 server</returns>
-        public List<Message> FetchMessagesByDateTime(string hostname, int port, bool useSsl, string username, string password, DateTime date)
+        public List<Message> FetchMessagesByDateTime(string hostname, int port, bool useSsl, string username, string password, DateTime date, ReadEmailHandler readHandler)
         {
+
             // The client disconnects from the server when being disposed
             using (Pop3Client client = new Pop3Client())
             {
@@ -147,20 +86,11 @@ namespace Leitor.Email
                     {
                         var message = client.GetMessage(i);
 
-                        // Atualizar horário do último Request
-                        if (i == messageCount)
-                        {
-                            LastRequestStartedOn = message.Headers.DateSent.ToLocalTime();
-                        }
+                        var result = readHandler(ConvertoToEmailData(message));
+                        
+                        if (result)
+                            client.DeleteMessage(i);
 
-                        if (DateTime.Compare(message.Headers.DateSent.ToLocalTime(), date) > 0)
-                        {
-                            fetchedMessages.Add(message);
-                        }
-                        else
-                        {
-                            break;
-                        }
                     }
                     catch (Exception e)
                     {
@@ -171,6 +101,69 @@ namespace Leitor.Email
                 // Now return the fetched messages
                 return fetchedMessages;
             }
+        }
+
+        private EmailData ConvertoToEmailData(Message message)
+        {
+                        
+            MailMessage mailMessage = message.ToMailMessage();
+
+            // Guardar possíveis remetentes no corpo do email (caso algum seja encaminhado)
+            List<String> remetentePotencial = new List<String>();
+
+            if (mailMessage.IsBodyHtml)
+            {
+                MatchCollection mCollection = Regex.Matches(mailMessage.Body.ToString(), @"(?i)(?:De|From):.*?(\b[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,6}\b)");
+
+                for (int x = 0; x < mCollection.Count; x++)
+                {
+                    remetentePotencial.Add(mCollection[x].Groups[1].Value.ToLower());
+                }
+            }
+
+            // Guardar informações dos anexos
+            List<Anexo> informacaoAnexos = new List<Anexo>();
+
+            string path = FileManager.GetCaminho(CaminhoPara.AnexosProcessando);
+
+            foreach (System.Net.Mail.Attachment attachment in mailMessage.Attachments)
+            {
+                if (attachment.ContentType.ToString().ToLower().Contains("pdf"))
+                {
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    string attachmentFileName = Regex.Replace(attachment.Name, @"[^\w\-.\s]", "");
+                    string fileName = Path.GetFileNameWithoutExtension(attachmentFileName) + "_P" + DateTime.Now.ToString("ddMMyyyy-hhmmssfff") + Path.GetExtension(attachmentFileName);
+                    string filePath = Path.Combine(path, fileName);
+
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write))
+                    {
+                        byte[] allBytes = new byte[attachment.ContentStream.Length];
+                        int bytesRead = attachment.ContentStream.Read(allBytes, 0, (int)attachment.ContentStream.Length);
+
+                        fileStream.Write(allBytes, 0, bytesRead);
+                        fileStream.Flush();
+                    }
+
+                    informacaoAnexos.Add(new Anexo { CaminhoArquivo = filePath, NomeArquivo = Path.GetFileName(filePath) });
+
+                    Log.SaveTxt("EmailExchange.LoadEmails", "Anexo armazenado: " + filePath, Log.LogType.Processo);
+                }
+            }
+
+            return new EmailData()
+            {
+                Anexos = informacaoAnexos,
+                Assunto = message.Headers.Subject,
+                Corpo = mailMessage.Body,
+                Data = message.Headers.DateSent.ToLocalTime(),
+                IdEnderecoEmail = Info.Id,
+                Remetente = mailMessage.From.Address.ToString(),
+                RemetentesPotenciais = remetentePotencial
+            };
         }
 
         private static object _lockBecauseOfLastRequestDateTime = new object();

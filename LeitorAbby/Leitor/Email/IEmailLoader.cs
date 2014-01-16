@@ -12,6 +12,8 @@ namespace Leitor.Email
         DateTime LastRequestStartedOn { get; set; }
         DateTime RequestDate { get; set; }
         EmailInfo Info { get; set; }
-        List<EmailData> LoadEmails();
+        List<EmailData> LoadEmails(ReadEmailHandler readHandler);
     }
+
+    public delegate bool ReadEmailHandler(EmailData email);
 }

@@ -67,9 +67,8 @@ namespace Leitor.Dao
                     cmd.Parameters.AddWithValue("@EMA_DATA_RECEBIMENTO", email.Data);
                     cmd.Parameters.AddWithValue("@EMA_ID", email.IdEnderecoEmail);
 
-                    cmd.ExecuteNonQuery();
+                    success = cmd.ExecuteNonQuery() > 0;
 
-                    success = true;
                 }
             }
             catch (Exception e)

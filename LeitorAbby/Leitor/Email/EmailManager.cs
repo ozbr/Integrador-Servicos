@@ -112,19 +112,13 @@ namespace Leitor.Email
 
         public void Download(IEmailLoader loader)
         {
-            List<EmailData> result = loader.LoadEmails();
+            List<EmailData> result = loader.LoadEmails(ReadEmail);
 
             if (result.Count > 0)
                 Log.SaveTxt("Emails Lidos: " + result.Count.ToString(), Log.LogType.Debug);
-
-            foreach (EmailData ed in result)
-            {
-                ed.IdEnderecoEmail = loader.Info.Id;
-                ReadEmail(ed);
-            }
         }
 
-        private void ReadEmail(EmailData email)
+        private bool ReadEmail(EmailData email)
         {
             Log.SaveTxt("Lendo Email: " + email.Assunto, Log.LogType.Debug);
 
@@ -261,12 +255,12 @@ namespace Leitor.Email
                 }
 
                 EmailDataDAO dao = new EmailDataDAO();
-                dao.SalvarEmailData(email, initialStatus);
+                return dao.SalvarEmailData(email, initialStatus);
             }
             else
             {
                 LogDAO dao = new LogDAO();
-                dao.InserirLog("Não foram encontrados notas fiscais.", email.Remetente, email.Assunto, email.Corpo, email.IdEnderecoEmail);
+                return dao.InserirLog("Não foram encontrados notas fiscais.", email.Remetente, email.Assunto, email.Corpo, email.IdEnderecoEmail);
             }
         }
     }

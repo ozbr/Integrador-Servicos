@@ -118,6 +118,7 @@ namespace Leitor.Model
         public string NumeroRpsSubstituido { get; set; }
         public string SerieRpsSubstituido { get; set; }
         public string TipoRpsSubstituido { get; set; }
+        public string OutrasInformacoes { get; set; }
     }
 
     public class Emit
@@ -136,11 +137,14 @@ namespace Leitor.Model
         public string IE { get; set; }
         public string IM { get; set; }
         public string CRT { get; set; }
+        public string Email { get; set; }
     }
 
     public class Ender
     {
         public string xLgr { get; set; }
+        public string nro { get; set; }
+        public string xCpl { get; set; }
         public string xBairro { get; set; }
         public string cMun { get; set; }
         public string xMun { get; set; }
@@ -165,7 +169,7 @@ namespace Leitor.Model
 
         public string IE { get; set; }
         public string IM { get; set; }
-        public string email { get; set; }
+        public string Email { get; set; }
     }
 
     public class Det
@@ -225,6 +229,9 @@ namespace Leitor.Model
         public string Discriminacao { get; set; }
         public string CodigoMunicipio { get; set; }
         public string MunicipioIncidencia { get; set; }
+        public string Quantidade { get; set; }
+        public string PrecoUnit { get; set; }
+        
     }
 
     public class Imposto
@@ -388,12 +395,14 @@ namespace Leitor.Model
         public string vIR { get; set; }
         public string vCSLL { get; set; }
         public string ValorIss { get; set; }
+        public string BcRetencaoISS { get; set; }
         public string OutrasRetencoes { get; set; }
         public string Aliquota { get; set; }
         public string DescontoIncondicionado { get; set; }
         public string DescontoCondicionado { get; set; }
         public string ISSRetido { get; set; }
         public string vLiquidoNfse { get; set; }
+        public string ValorCreditoGerado { get; set; }
     }
 
     public class Transp

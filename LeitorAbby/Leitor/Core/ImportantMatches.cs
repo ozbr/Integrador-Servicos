@@ -198,44 +198,53 @@ namespace Leitor.Core
             cityName = string.Empty;
             isTaxDoc = true;
 
-            string documentText = PdfToText.ExtrairTextoDoPdf(documentPath);
-
-            Match m = Regex.Match(documentText, @"(?i)prefeitura.*?de\s{1,}\b([A-Z|a-z|À-ÿ| ]*)\b");
-            Match n = Regex.Match(documentText, @"(?i)munic.pio.*?de\s{1,}\b([A-Z|a-z|À-ÿ| ]*)\b");
-
-            if (m.Groups[1].Success || n.Groups[1].Success)
+            try
             {
-                string foundName;
+                string documentText = PdfToText.ExtrairTextoDoPdf(documentPath);
 
-                if (!String.IsNullOrEmpty(m.Groups[1].Value))
+                Match m = Regex.Match(documentText, @"(?i)prefeitura(.{0,3}da.{0,3}est.ncia)?(.{0,3}municipal)?.{0,3}de\s{1,}\b([A-Z|a-z|À-ÿ| ]*)\b");
+                Match n = Regex.Match(documentText, @"(?i)munic.pio.{0,3}de\s{1,}\b([A-Z|a-z|À-ÿ| ]*)\b");
+
+                if (m.Groups[3].Success || n.Groups[1].Success)
                 {
-                    foundName = m.Groups[1].Value;
+                    string foundName;
+
+                    if (!String.IsNullOrEmpty(m.Groups[3].Value))
+                    {
+                        foundName = m.Groups[3].Value;
+                    }
+                    else
+                    {
+                        foundName = n.Groups[1].Value;
+                    }
+
+                    foundName = Regex.Replace(foundName, @"(?i)[^A-Z|a-z| ]", ".?");
+
+                    for (int i = 0; i < _cities.Count; i++)
+                    {
+                        if (Regex.IsMatch(_cities[i], foundName, RegexOptions.IgnoreCase))
+                        {
+                            cityName = _cities[i];
+                            success = true;
+                            break;
+                        }
+                    }
+
+                    if (!success)
+                    {
+                        Console.WriteLine("A PREFEITURA '{0}' AINDA NÃO FOI ADICIONADA", foundName);
+                    }
                 }
                 else
                 {
-                    foundName = n.Groups[1].Value;
-                }
-
-                foundName = Regex.Replace(foundName, @"(?i)[^A-Z|a-z| ]", ".?");
-
-                for (int i = 0; i < _cities.Count; i++)
-                {
-                    if (Regex.IsMatch(_cities[i], foundName, RegexOptions.IgnoreCase))
-                    {
-                        cityName = _cities[i];
-                        success = true;
-                        break;
-                    }
-                }
-
-                if (!success)
-                {
-                    Console.WriteLine("A PREFEITURA '{0}' AINDA NÃO FOI ADICIONADA", foundName);
+                    isTaxDoc = false;
                 }
             }
-            else
+            catch (Exception ex)
             {
+                cityName = string.Empty;
                 isTaxDoc = false;
+                Log.SaveTxt("ImportantMatches.TryGetCityAndIsTaxDoc", ex.Message, Log.LogType.Erro);
             }
 
             return success;
@@ -260,7 +269,10 @@ namespace Leitor.Core
                     success = true;
 
                     cityName = _taxDocUrlAssociation[i][0];
-                    url = m.Groups[1].Value;
+                    if (m.Groups[0].Value == "")
+                        url = m.Groups[1].Value;
+                    else
+                        url = m.Groups[0].Value;
                     urlParams = new string[] { _taxDocUrlAssociation[i][2], _taxDocUrlAssociation[i][3] };
                     break;
                 }
@@ -288,7 +300,7 @@ namespace Leitor.Core
                     {
                         success = true;
 
-                        url = m.Groups[1].Value.Replace("&amp;","&");
+                        url = m.Groups[0].Value.Replace("&amp;","&");
                         urlParams = new string[] { _taxDocUrlAssociation[i][2], _taxDocUrlAssociation[i][3] };
                     }
                 }

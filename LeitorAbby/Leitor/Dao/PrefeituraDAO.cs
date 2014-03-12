@@ -112,9 +112,9 @@ namespace Leitor.Dao
                             //PRE.PRE_ID, PRE.PRE_NOME, REM_RGXLINK, REM.REM_RGXSECUNDARIO, REM.REM_PARAMETRO
                             prefeitura.Id = (int)dr["PRE_ID"];
                             prefeitura.Nome = (String)dr["PRE_NOME"];
-                            prefeitura.RgxLink = (String)dr["REM_RGXLINK"];
-                            prefeitura.RgxLinkSecundario = (String)dr["REM_RGXSECUNDARIO"];
-                            prefeitura.RgxLinkFormat = (String)dr["REM_PARAMETRO"];
+                            prefeitura.RgxLink = (dr["PRE_RGXLINK"] == DBNull.Value) ? null : (String)dr["PRE_RGXLINK"];
+                            prefeitura.RgxLinkSecundario = (dr["PRE_RGXLINK_SECUNDARIO"] == DBNull.Value) ? null : (String)dr["PRE_RGXLINK_SECUNDARIO"];
+                            prefeitura.RgxLinkFormat = (dr["PRE_RGXLINK_FORMAT"] == DBNull.Value) ? null : (String)dr["PRE_RGXLINK_FORMAT"];
 
                             result.Add(prefeitura);
                         }

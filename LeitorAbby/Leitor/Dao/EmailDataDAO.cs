@@ -20,6 +20,7 @@ namespace Leitor.Dao
             {
                 using (var cmd = _conn.CreateCommand())
                 {
+                    cmd.CommandTimeout = 60;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.CommandText = "[SalvarEmailData]";
 
@@ -73,7 +74,7 @@ namespace Leitor.Dao
             }
             catch (Exception e)
             {
-                Log.SaveTxt("EmailDataDAO.InserirEmailData", e.Message, Log.LogType.Erro);
+                Log.SaveTxt("EmailDataDAO.SalvarEmailData", e.Message, Log.LogType.Erro);
                 success = false;
             }
             finally
@@ -198,6 +199,68 @@ namespace Leitor.Dao
 
             return infoData;
         }
+
+        public List<string> SelectAssuntoEmailDataPorDataEnvio(string username)
+        {
+            List<string> infoData = new List<string>();
+
+            try
+            {
+                using (var cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    string comando = @"
+	                        SELECT *
+							FROM EMAIL_DATA EDA
+	                        WHERE EDA_DATA > '01/06/2014' AND EMA_ID = {0}";
+                    cmd.CommandText = (username.Equals("nfse.b2finance@keeptrueuol.com")) ? string.Format(comando, 6) : string.Format(comando, 1007);
+
+                    cmd.Connection.Open();
+
+                    using (var dataReader = cmd.ExecuteReader())
+                    {
+                        while (dataReader.Read())
+                        {
+                            infoData.Add((string)dataReader["EDA_ASSUNTO"]);
+                        }
+                        dataReader.Close();
+                    }
+                }
+
+                using (var cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    string comando = @"
+	                        SELECT DISTINCT LOG_ASSUNTO
+                            FROM LOG
+                            where LOG_DATA > '01/06/2014' AND EMA_ID = {0}";
+                    cmd.CommandText = (username.Equals("nfse.b2finance@keeptrueuol.com")) ? string.Format(comando, 6) : string.Format(comando, 1007);
+
+                    //cmd.Connection.Open();
+
+                    using (var dataReader = cmd.ExecuteReader())
+                    {
+                        while (dataReader.Read())
+                        {
+                            infoData.Add((string)dataReader["LOG_ASSUNTO"]);
+                        }
+                        dataReader.Close();
+                    }
+                }
+
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (_conn.State == System.Data.ConnectionState.Open)
+                    _conn.Close();
+            }
+
+            return infoData;
+        }
+
 
         /// <summary>
         /// 

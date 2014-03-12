@@ -46,7 +46,7 @@ namespace Leitor.Email
             {
                 Log.SaveTxt("EmailPop.LoadEmails", e.Message, Log.LogType.Erro);
             }
-            
+
             return emails;
         }
 
@@ -61,7 +61,6 @@ namespace Leitor.Email
         /// <returns>All Messages on the POP3 server</returns>
         public List<Message> FetchMessagesByDateTime(string hostname, int port, bool useSsl, string username, string password, DateTime date, ReadEmailHandler readHandler)
         {
-
             // The client disconnects from the server when being disposed
             using (Pop3Client client = new Pop3Client())
             {
@@ -77,7 +76,8 @@ namespace Leitor.Email
                 messageCount = client.GetMessageCount();
 
                 List<Message> fetchedMessages = new List<Message>(messageCount);
-
+                //EmailDataDAO eDao = new EmailDataDAO();
+                //List<string> assuntos = eDao.SelectAssuntoEmailDataPorDataEnvio(username);
                 // Messages are numbered in the interval: [1, messageCount]
                 // Most servers give the latest message the highest number
                 for (int i = messageCount; i > 0; i--)
@@ -86,18 +86,42 @@ namespace Leitor.Email
                     {
                         var message = client.GetMessage(i);
 
-                        var result = readHandler(ConvertoToEmailData(message));
-                        
-                        if (result)
-                            client.DeleteMessage(i);
+                        // Atualizar horário do último Request
+                        if (i == messageCount)
+                        {
+                            LastRequestStartedOn = message.Headers.Received[0].Date.ToLocalTime();
+                        }
+                        //DateTime dataRio = new DateTime(2014, 01, 29);
+
+                        //if ((username.Equals("nfse@keeptrueuol.com") && message.Headers.From.ToString().Contains("<notacarioca-auto@rio.rj.gov.br>") && DateTime.Compare(message.Headers.Received[0].Date.ToLocalTime(), dataRio) > 0)
+                        //    ||
+                        //    (DateTime.Compare(message.Headers.Received[0].Date.ToLocalTime(), date) > 0))
+                        if ((DateTime.Compare(message.Headers.Received[0].Date.ToLocalTime(), date) > 0))
+                        {
+                            Log.SaveTxt("EmailPop.FetchMessagesByDateTime", "Iniciando verificação de email. Título: " + message.Headers.Subject + ". Remetente: " + message.Headers.From + ". Recebimento: " + message.Headers.Received[0].Date.ToLocalTime(), Log.LogType.Processo);
+                            Console.WriteLine("Email " + i + " verificado agora. Título: " + message.Headers.Subject);
+                            var result = readHandler(ConvertoToEmailData(message));
+                            if (result)
+                            {
+                                Log.SaveTxt("EmailPop.FetchMessagesByDateTime", "Email verificado com sucesso. Título: " + message.Headers.Subject + ". Remetente: " + message.Headers.From + ". Recebimento: " + message.Headers.Received[0].Date.ToLocalTime(), Log.LogType.Processo);
+                                Console.WriteLine("Email " + i + " processado agora. Assunto mensagem: " + message.Headers.Subject);
+                            }
+                        }
+                        //else if (!username.Equals("nfse@keeptrueuol.com"))
+                        else
+                        {
+                            Console.WriteLine("Fim");
+                            break;
+                        }
+
 
                     }
                     catch (Exception e)
                     {
                         Log.SaveTxt("EmailPop.FetchMessagesByDateTime", "Erro ao Obter Email - " + e.Message, Log.LogType.Erro);
+                        Console.WriteLine("Erro: " + e.Message);
                     }
                 }
-
                 // Now return the fetched messages
                 return fetchedMessages;
             }
@@ -105,7 +129,7 @@ namespace Leitor.Email
 
         private EmailData ConvertoToEmailData(Message message)
         {
-                        
+
             MailMessage mailMessage = message.ToMailMessage();
 
             // Guardar possíveis remetentes no corpo do email (caso algum seja encaminhado)
@@ -135,6 +159,8 @@ namespace Leitor.Email
                         Directory.CreateDirectory(path);
                     }
 
+                    if (string.IsNullOrEmpty(attachment.Name))
+                        attachment.Name = "empty_name.pdf";
                     string attachmentFileName = Regex.Replace(attachment.Name, @"[^\w\-.\s]", "");
                     string fileName = Path.GetFileNameWithoutExtension(attachmentFileName) + "_P" + DateTime.Now.ToString("ddMMyyyy-hhmmssfff") + Path.GetExtension(attachmentFileName);
                     string filePath = Path.Combine(path, fileName);
@@ -159,9 +185,9 @@ namespace Leitor.Email
                 Anexos = informacaoAnexos,
                 Assunto = message.Headers.Subject,
                 Corpo = mailMessage.Body,
-                Data = message.Headers.DateSent.ToLocalTime(),
+                Data = message.Headers.Received[0].Date.ToLocalTime(),
                 IdEnderecoEmail = Info.Id,
-                Remetente = mailMessage.From.Address.ToString(),
+                Remetente = (mailMessage.From == null) ? "" : mailMessage.From.Address.ToString(),
                 RemetentesPotenciais = remetentePotencial
             };
         }

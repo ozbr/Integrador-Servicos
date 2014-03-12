@@ -91,7 +91,7 @@ namespace Leitor.Document
                     #region _nota.infNFe.dest
 
                     _nota.infNFe.dest.CNPJ = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CNPJ")));
-                    _nota.infNFe.dest.email = Util.SeparaEmails(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_email")));
+                    _nota.infNFe.dest.Email = Util.SeparaEmails(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_email")));
 
                     //_nota.infNFe.dest.enderDest = "";
                     _nota.infNFe.dest.enderDest.CEP = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CEP")));

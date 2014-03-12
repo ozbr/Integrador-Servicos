@@ -16,7 +16,7 @@ namespace Leitor.Email
 {
     public class EmailExchange : IEmailLoader
     {
-        public List<EmailData> LoadEmails()
+        public List<EmailData> LoadEmails(ReadEmailHandler readHandler)
         {
             List<EmailData> emails = new List<EmailData>();
 

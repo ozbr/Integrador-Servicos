@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="itextsharp, Version=5.4.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LeitorService\bin\Debug\itextsharp.dll</HintPath>
+      <HintPath>..\Leitor\Libraries\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

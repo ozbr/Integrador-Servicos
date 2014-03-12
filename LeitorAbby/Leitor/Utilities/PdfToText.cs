@@ -27,7 +27,7 @@ namespace Leitor.Utilities
                 //    f.CopyTo("C:\\Temp\\Erratas\\" + nomeArquivo.Split('\\')[nomeArquivo.Split('\\').Length - 1]);
                 //}
                 //PDDocument doc = PDDocument.load("C:\\Temp\\Erratas\\" + nomeArquivo.Split('\\')[nomeArquivo.Split('\\').Length - 1]);
-                
+
                 var doc = PDDocument.load(nomeArquivo);
                 PDFTextStripper stripper = new PDFTextStripper();
 
@@ -38,8 +38,8 @@ namespace Leitor.Utilities
             catch (Exception e)
             {
                 Log.SaveTxt("PdfToText.ConverterComPdfBox", e.Message, Log.LogType.Erro);
+                return "";
             }
-            return "";
         }
     }
 }

@@ -79,12 +79,12 @@ namespace Leitor.Document
                     doc.Load(Local);
                     //TODO 
                     //doc.Load(String.Format(ArquivosManager.LocalArquivos, r.Emails) + "pagina.html");
-                    
+
                     var chaveProt = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_protNFe_infProt_chNFe")));
                     if (!string.IsNullOrEmpty(chaveProt))
                     {
                         //Está hard code mas precisa criar parametrização
-                        string codBarra  = Util.LimpaCampos(XpathSingleNode(doc, "//*/_CodigoBarra"));
+                        string codBarra = Util.LimpaCampos(XpathSingleNode(doc, "//*/_CodigoBarra"));
                         if (!string.IsNullOrEmpty(codBarra))
                             chaveProt = codBarra;
 
@@ -92,8 +92,7 @@ namespace Leitor.Document
 
                         break;
                     }
-                    
-                    //ver se funciona com um, depois aplicar nos demais
+
                     _nota.infNFe.ide.nNF = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ide_nNF"));
 
                     #region _nota.infNFe
@@ -115,28 +114,6 @@ namespace Leitor.Document
                     _nota.infNFe.cobr.fat.vOrig = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_fat_vOrig")));
                     #endregion
 
-                    #region _nota.infNFe.dest
-
-                    _nota.infNFe.dest.CNPJ = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CNPJ")));
-                    _nota.infNFe.dest.email = Util.SeparaEmails(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_email")));
-
-                    //_nota.infNFe.dest.enderDest = "";
-                    _nota.infNFe.dest.enderDest.CEP = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CEP")));
-                    _nota.infNFe.dest.enderDest.cMun = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_cMun")));
-                    _nota.infNFe.dest.enderDest.cPais = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_cPais")));
-                    _nota.infNFe.dest.enderDest.fone = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_fone")));
-                    _nota.infNFe.dest.enderDest.UF = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_UF"));
-
-                    _nota.infNFe.dest.enderDest.xBairro = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xBairro"));
-                    _nota.infNFe.dest.enderDest.xLgr = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xLgr"));
-                    _nota.infNFe.dest.enderDest.xMun = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xMun"));
-                    _nota.infNFe.dest.enderDest.xPais = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xPais"));
-
-                    _nota.infNFe.dest.IE = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_IE")));
-                    _nota.infNFe.dest.IM = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_IM")));
-                    _nota.infNFe.dest.xNome = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xNome"));
-                    #endregion
-
                     #region _nota.infNFe.emit
 
                     _nota.infNFe.emit.CNPJ = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_CNPJ")));
@@ -150,6 +127,8 @@ namespace Leitor.Document
                     _nota.infNFe.emit.enderEmit.UF = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_UF"));
                     _nota.infNFe.emit.enderEmit.xBairro = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xBairro"));
                     _nota.infNFe.emit.enderEmit.xLgr = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xLgr"));
+                    _nota.infNFe.emit.enderEmit.nro = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xNro"));
+                    _nota.infNFe.emit.enderEmit.xCpl = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xCpl"));
                     _nota.infNFe.emit.enderEmit.xMun = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xMun"));
                     _nota.infNFe.emit.enderEmit.xPais = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xPais"));
 
@@ -157,7 +136,32 @@ namespace Leitor.Document
                     _nota.infNFe.emit.IM = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_IM")));
                     _nota.infNFe.emit.xFant = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xFant"));
                     _nota.infNFe.emit.xNome = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xNome"));
+                    _nota.infNFe.emit.Email = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_Email"));
 
+                    #endregion
+                    
+                    #region _nota.infNFe.dest
+
+                    _nota.infNFe.dest.CNPJ = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CNPJ")));
+                    _nota.infNFe.dest.Email = Util.SeparaEmails(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_email")));
+
+                    //_nota.infNFe.dest.enderDest = "";
+                    _nota.infNFe.dest.enderDest.CEP = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CEP")));
+                    _nota.infNFe.dest.enderDest.cMun = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_cMun")));
+                    _nota.infNFe.dest.enderDest.cPais = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_cPais")));
+                    _nota.infNFe.dest.enderDest.fone = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_fone")));
+                    _nota.infNFe.dest.enderDest.UF = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_UF"));
+
+                    _nota.infNFe.dest.enderDest.xBairro = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xBairro"));
+                    _nota.infNFe.dest.enderDest.xLgr = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xLgr"));
+                    _nota.infNFe.dest.enderDest.nro = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xNro"));
+                    _nota.infNFe.dest.enderDest.xCpl = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xCpl"));
+                    _nota.infNFe.dest.enderDest.xMun = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xMun"));
+                    _nota.infNFe.dest.enderDest.xPais = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xPais"));
+
+                    _nota.infNFe.dest.IE = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_IE")));
+                    _nota.infNFe.dest.IM = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_IM")));
+                    _nota.infNFe.dest.xNome = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_xNome"));
                     #endregion
 
                     #region _nota.infNFe.ide
@@ -186,6 +190,7 @@ namespace Leitor.Document
                     _nota.infNFe.ide.tpEmis = "0";//Util.FormataData(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ide_dEmi")));
                     _nota.infNFe.ide.tpImp = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ide_tpImp"));
                     _nota.infNFe.ide.tpNF = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ide_tpNF"));
+                    _nota.infNFe.ide.OutrasInformacoes = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ide_OutrasInformacoes"));
 
                     #endregion
 
@@ -222,6 +227,8 @@ namespace Leitor.Document
                             d.prod.servico.Discriminacao = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_Discriminacao"), beginIndex + ""));
                             d.prod.servico.ItemListaServico = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_servico_ItemListaServico"));
                             d.prod.servico.MunicipioIncidencia = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_MunicipioIncidencia"), beginIndex + ""));
+                            d.prod.servico.Quantidade = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_Quantidade"), beginIndex + ""));
+                            d.prod.servico.PrecoUnit = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_PrecoUnit"), beginIndex + ""));
 
                             d.prod.uCom = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_prod_uCom"), beginIndex + ""));
                             d.prod.vProd = Util.FormataDecimal(XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_prod_vProd"), beginIndex + "")));
@@ -260,13 +267,14 @@ namespace Leitor.Document
                     #endregion
 
                     #region _nota.infNFe.total
-
+                    _nota.infNFe.total.ICMSTot.ValorCreditoGerado = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_ValorCreditoGerado")));
                     _nota.infNFe.total.ICMSTot.Aliquota = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_Aliquota")));
                     _nota.infNFe.total.ICMSTot.DescontoCondicionado = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_DescontoCondicionado")));
                     _nota.infNFe.total.ICMSTot.DescontoIncondicionado = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_DescontoIncondicionado")));
                     _nota.infNFe.total.ICMSTot.ISSRetido = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_ISSRetido")));
                     _nota.infNFe.total.ICMSTot.OutrasRetencoes = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_OutrasRetencoes")));
                     _nota.infNFe.total.ICMSTot.ValorIss = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_ValorIss")));
+                    _nota.infNFe.total.ICMSTot.BcRetencaoISS = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_BcRetencaoISS")));
                     _nota.infNFe.total.ICMSTot.vBC = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_vBC")));
                     _nota.infNFe.total.ICMSTot.vBCST = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_vBCST")));
                     _nota.infNFe.total.ICMSTot.vCOFINS = Util.FormataDecimal(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_ICMSTot_vCOFINS")));
@@ -357,12 +365,29 @@ namespace Leitor.Document
                             {
                                 if (node != null)
                                 {
-                                    Match m = Regex.Match(result, aux[1], RegexOptions.Singleline);
-                                    if (m.Success)
-                                        result = m.Groups[Convert.ToInt32(aux[2])].Value;
+                                    result = result.Replace((char)8232, ' '); //Remove newline
+                                    if (aux[1].Equals("SplitScore"))
+                                    {
+                                        var resultCortado = result.Split('-');
+                                        if (resultCortado.Length >= Convert.ToInt16(aux[3]))
+                                        {
+                                            Match m = Regex.Match(resultCortado[Convert.ToInt16(aux[3]) - 1], aux[2], RegexOptions.Singleline);
+                                            if (m.Success)
+                                                result = m.Groups[Convert.ToInt32(aux[3]) - 1].Value;
+                                            else
+                                                result = string.Empty;
+                                        }
+                                        else
+                                            result = string.Empty;
+                                    }
                                     else
-                                        result = string.Empty;
-
+                                    {
+                                        Match m = Regex.Match(result, aux[1], RegexOptions.Singleline);
+                                        if (m.Success)
+                                            result = m.Groups[Convert.ToInt32(aux[2])].Value;
+                                        else
+                                            result = string.Empty;
+                                    }
                                 }
                             }
                             if (aux.Length == 4)
@@ -373,7 +398,7 @@ namespace Leitor.Document
                             break;
                         default:
                             break;
-                    }                  
+                    }
 
                 }
                 catch (Exception e)

@@ -43,9 +43,13 @@ namespace TesteRegexPrefeitura
 
                 if (System.Configuration.ConfigurationManager.AppSettings["ExecuteOnce"] == "true")
                 {
+                    Console.WriteLine("Iniciando etapa de download.");
                     Jobs.ListenEmailTask(emailList);
-                    Jobs.ListenReadDocumentTask(null);
-                    Jobs.ListenSendDocumentTask(null);
+                    Console.WriteLine("Terminou etapa de download.");
+                    Console.WriteLine("Iniciando etapa de processamento.");
+                    //Jobs.ListenReadDocumentTask(null);
+                    Console.WriteLine("Terminou etapa de processamento.");
+                    //Jobs.ListenSendDocumentTask(null);
                 }
                 else
                 {

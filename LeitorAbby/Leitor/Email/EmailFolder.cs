@@ -19,7 +19,7 @@ namespace Leitor.Email
 {
     public class EmailFolder : IEmailLoader
     {
-        public List<Model.EmailData> LoadEmails()
+        public List<Model.EmailData> LoadEmails(ReadEmailHandler readHandler)
         {
             List<EmailData> emails = new List<EmailData>();
 

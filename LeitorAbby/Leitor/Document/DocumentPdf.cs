@@ -137,7 +137,7 @@ namespace Leitor.Document
 
                         _nota.infNFe.dest.CNPJ =
                             Util.LimpaCampos(geral.Groups[rgxModel.GetKeyValue("RGX_dest_CNPJ")].Value.Trim());
-                        _nota.infNFe.dest.email =
+                        _nota.infNFe.dest.Email =
                             Util.SeparaEmails(geral.Groups[rgxModel.GetKeyValue("RGX_dest_email")].Value.Trim());
 
                         //_nota.infNFe.dest.enderDest = "";

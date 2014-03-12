@@ -204,7 +204,7 @@ namespace Leitor.Dao
             return result;
         }
 
-        public List<RegexModel> SelecionarRegexPossiveis(string p)
+        public List<RegexModel> SelecionarRegexPossiveis(string pre_nome)
         {
             List<RegexModel> listRegexModel = new List<RegexModel>();
             DataTable dataTable = null;
@@ -215,7 +215,7 @@ namespace Leitor.Dao
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "[SelecionarRegexPorNomePrefeitura]";
-                    cmd.Parameters.AddWithValue("@PRE_NOME", p);
+                    cmd.Parameters.AddWithValue("@PRE_NOME", pre_nome);
                     cmd.Connection = _conn;
                     cmd.Connection.Open();
 
@@ -225,7 +225,7 @@ namespace Leitor.Dao
                         dataTable.Load(myReader);
                     }
 
-                    #region 
+                    #region
                     //troquei, adicionando 'dinamicamente' no fim do método com base nas colunas da table
                     //SqlDataReader dr = cmd.ExecuteReader();
                     //if(dr.HasRows)
@@ -295,5 +295,50 @@ namespace Leitor.Dao
 
             return listRegexModel;
         }
+
+        public bool AtualizarRegex(Int64 pre_id, Dictionary<string, string> regexes)
+        {
+            int response = 0;
+            try
+            {
+                using (var cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    string command = "UPDATE REGEXES SET ";
+
+                    int contador = 0;
+                    foreach (var linha in regexes)
+                    {
+                        contador++;
+                        if (linha.Value == null)
+                            command = string.Concat(command, string.Format("{0} = null ", linha.Key));
+                        else
+                            command = string.Concat(command, string.Format("{0} = '{1}' ", linha.Key, linha.Value));
+                        
+                        if (regexes.Count != contador)
+                            command = string.Concat(command, ", ");
+                    }
+
+                    command = string.Concat(command, string.Format("WHERE PRE_ID = {0}", pre_id));
+
+                    cmd.CommandText = command;
+                    cmd.Connection = _conn;
+                    cmd.Connection.Open();
+
+                    response = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.SaveTxt("RegexesDAO.AtualizarRegex", e.Message, Log.LogType.Erro);
+            }
+            finally
+            {
+                _conn.Close();
+            }
+
+            return (response != 0);
+        }
+
     }
 }

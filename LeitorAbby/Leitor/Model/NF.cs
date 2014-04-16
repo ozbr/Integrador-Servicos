@@ -125,6 +125,7 @@ namespace Leitor.Model
     {
         private Ender _enderEmit = new Ender();
         public string CNPJ { get; set; }
+        public string CPF { get; set; }
         public string xNome { get; set; }
         public string xFant { get; set; }
 
@@ -159,6 +160,7 @@ namespace Leitor.Model
     {
         private Ender _enderDest = new Ender();
         public string CNPJ { get; set; }
+        public string CPF { get; set; }
         public string xNome { get; set; }
 
         public Ender enderDest

@@ -24,6 +24,8 @@ namespace Leitor
 
         public static void ListenEmailTask(object state)
         {
+            Log.SaveTxt("Início", Log.LogType.Debug);
+
             List<IEmailLoader> emailList = (List<IEmailLoader>)state;
             manager.UpdatePostalBoxes(ref emailList);
 
@@ -45,10 +47,14 @@ namespace Leitor
             {
                 tasksList[i].Dispose();
             }
+
+            Log.SaveTxt("Fim", Log.LogType.Debug);
         }
 
         public static void ListenReadDocumentTask(object state)
         {
+            Log.SaveTxt("Início", Log.LogType.Debug);
+
             ReadOutputOCRFiles();
 
             EmailDataDAO dao = new EmailDataDAO();
@@ -78,6 +84,8 @@ namespace Leitor
             {
                 tasksList[i].Dispose();
             }
+
+            Log.SaveTxt("Fim", Log.LogType.Debug);
         }
 
         private static void ReadOutputOCRFiles()
@@ -117,6 +125,8 @@ namespace Leitor
 
         public static void ListenSendDocumentTask(object state)
         {
+            Log.SaveTxt("Início", Log.LogType.Debug);
+
             using (SqlConnection connection = new SqlConnection(Repository._connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -142,7 +152,7 @@ namespace Leitor
                             email.CaminhoLote = dataReader["EDA_LOCAL_LOTE"] == DBNull.Value ? null : (string)dataReader["EDA_LOCAL_LOTE"];
                             if (!string.IsNullOrEmpty(Path.GetFileName(email.CaminhoLote)))
                                 email.CaminhoLote = email.CaminhoLote.Replace(Path.GetFileName(email.CaminhoLote), string.Empty);
-                            
+
                             string[] dirs = Directory.GetFiles(email.CaminhoLote, "*.zip");
 
                             for (int i = 0; i < dirs.Length; i++)
@@ -157,6 +167,8 @@ namespace Leitor
                     command.Connection.Close();
                 }
             }
+
+            Log.SaveTxt("Fim", Log.LogType.Debug);
         }
 
     }

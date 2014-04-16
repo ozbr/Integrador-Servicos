@@ -1,5 +1,6 @@
 ﻿using Leitor.Core;
 using Leitor.Document;
+using Leitor.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,11 +32,21 @@ namespace EditorLayout
 
             //X509Certificate2 certificate = collection[0];
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(@"http://www.issnetonline.com.br/cascavel/online/NotaDigital/NovoLayoutNovaNota.aspx?EF+4E+50+D1+44+B1+18+A8+DF+5C+59+97+6E+CD+6B+EA+28+C1+48+96+F3+B9+7A+84+A4+F9+24+D9+AD+FF+88+E3+CE+A5+FD+2+27+17+A8+B5+69+90+64+61+B2+96+DE+72+26+CC+D1+5A+8A+FD+50+C8+D5+79+CC+69+CD+CC+59+AD+BF+4C+B7+2+D2+C3+44+94+F+B9+A1+5F+E9+62+4C+88+B2+16+D2+C6+D5+A1+1B+8E+1F+24+A+6C+ED+39+32+D0+DA+53+82+71+78+CD+47+9B+55+52+6A+AB+1A+32+CC+FC+38+95+BF+9E+1E+56+79+86+A+92+BD+1B+6E+EF+E2+2F+F2+7B+B6+46+AB+9A+2B+3C+9C+A2+49+98+E6+43+E7+B0+");
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(@"http://www.notamaisfacil.novaiguacu.rj.gov.br/NotaFiscal/visualizarNota.php?id_nota_fiscal=MzQ2MTc2Nw==&temPrestador=Tg==&codCidIni=5869&rDecId=056839");
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
             HttpWebResponse res = (HttpWebResponse)req.GetResponse();
 
             DocumentDownloader.LerRespostaPagina(res, null);
+
+            //DocumentXml teste = new DocumentXml();
+            //teste.Local = @"C:\KeepTrue\Documentos\Abbyy\empty_name_P19032014-105114142.xml";
+            //teste.Prefeitura = new Prefeitura();
+            //teste.Prefeitura.Id = 1047;
+            //teste.Prefeitura.Nome = "CANOAS";
+
+            //NF result = teste.Read();
+
+            //string a = result.ToString();
 
             //string teste = "11.905.15";
             //int a = teste.LastIndexOf(',');

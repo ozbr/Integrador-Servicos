@@ -269,7 +269,7 @@ namespace Leitor.Core
                     success = true;
 
                     cityName = _taxDocUrlAssociation[i][0];
-                    if (m.Groups[0].Value == "")
+                    if (m.Groups.Count > 1)
                         url = m.Groups[1].Value;
                     else
                         url = m.Groups[0].Value;

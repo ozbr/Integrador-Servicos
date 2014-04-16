@@ -22,17 +22,22 @@ namespace Leitor.Document
                     aceptEncoding = "gzip,deflate,sdch";
 
                 url = url.Replace("&amp;", "&");
+                url = url.Replace("&#43;", "+");
+                url = url.Replace("\n", "");
+                url = url.Replace("\r", "");
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
                 req.UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36";
                 req.AllowAutoRedirect = true;
                 req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
                 //req.Headers.Add("Accept-Encoding", aceptEncoding);
                 req.Headers.Add("Accept-Language", "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4");
+                req.KeepAlive = false;
+                req.ProtocolVersion = HttpVersion.Version10;
 
                 req.CookieContainer = new CookieContainer();
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
-                
+
                 try
                 {
                     HttpWebResponse res = (HttpWebResponse)req.GetResponse();
@@ -51,6 +56,7 @@ namespace Leitor.Document
                         String urlSecundaria = String.Format(parametro, id);
 
                         urlSecundaria = urlSecundaria.Replace("&amp;", "&");
+                        urlSecundaria = urlSecundaria.Replace("&#43;", "+");
                         req = (HttpWebRequest)WebRequest.Create(urlSecundaria);
                         req.UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36";
                         req.AllowAutoRedirect = true;
@@ -105,7 +111,8 @@ namespace Leitor.Document
                 Directory.CreateDirectory(caminhoArquivo);
 
             caminhoArquivo = Path.Combine(caminhoArquivo, "B_" + DateTime.Now.ToString("ddMMyyyy-hhmmssfff") + ".pdf");
-            HtmlToPdf.Options.OutputArea = new RectangleF(0.25f, 0.25f, 7.5f, 10f);
+            HtmlToPdf.Options.OutputArea = new RectangleF(0.25f, 0.25f, 8f, 10f);
+            HtmlToPdf.Options.ZoomLevel = 0.95f;
             HtmlToPdf.ConvertHtml(sr.ReadToEnd(), caminhoArquivo);
 
             return caminhoArquivo;

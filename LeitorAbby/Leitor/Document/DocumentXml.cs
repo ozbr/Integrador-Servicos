@@ -116,7 +116,13 @@ namespace Leitor.Document
 
                     #region _nota.infNFe.emit
 
-                    _nota.infNFe.emit.CNPJ = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_CNPJ")));
+                    /* Tratamento para verificar se é CNPJ ou CPF */
+                    string cpfcnpj = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_CNPJ")));
+                    if (cpfcnpj.Length > 11)
+                        _nota.infNFe.emit.CNPJ = cpfcnpj;
+                    else
+                        _nota.infNFe.emit.CPF = cpfcnpj;
+
                     _nota.infNFe.emit.CRT = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_CRT"));
 
                     _nota.infNFe.emit.enderEmit.CEP = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_CEP")));
@@ -136,13 +142,19 @@ namespace Leitor.Document
                     _nota.infNFe.emit.IM = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_IM")));
                     _nota.infNFe.emit.xFant = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xFant"));
                     _nota.infNFe.emit.xNome = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_xNome"));
-                    _nota.infNFe.emit.Email = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_Email"));
+                    _nota.infNFe.emit.Email = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_emit_email"));
 
                     #endregion
-                    
+
                     #region _nota.infNFe.dest
 
-                    _nota.infNFe.dest.CNPJ = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CNPJ")));
+                    /* Tratamento para verificar se é CNPJ ou CPF */
+                    cpfcnpj = Util.LimpaCampos(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_CNPJ")));
+                    if (cpfcnpj.Length > 11)
+                        _nota.infNFe.dest.CNPJ = cpfcnpj;
+                    else
+                        _nota.infNFe.dest.CPF = cpfcnpj;
+
                     _nota.infNFe.dest.Email = Util.SeparaEmails(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_dest_email")));
 
                     //_nota.infNFe.dest.enderDest = "";
@@ -254,6 +266,8 @@ namespace Leitor.Document
                         d.prod.servico.Discriminacao = Util.LimpaDiscriminacao(XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_servico_Discriminacao")));
                         d.prod.servico.ItemListaServico = XpathSingleNode(doc, rgxModel.GetKeyXPath("RGX_servico_ItemListaServico"));
                         d.prod.servico.MunicipioIncidencia = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_MunicipioIncidencia")));
+                        d.prod.servico.Quantidade = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_Quantidade")));
+                        d.prod.servico.PrecoUnit = XpathSingleNode(doc, String.Format(rgxModel.GetKeyXPath("RGX_servico_PrecoUnit")));
                         _nota.infNFe.det.Add(d);
                     }
 
@@ -343,6 +357,8 @@ namespace Leitor.Document
             {
                 try
                 {
+                    if (xpath.StartsWith("="))
+                        return result = xpath.Remove(0, 1);
 
                     string[] aux = xpath.Split('#');
 
@@ -368,17 +384,11 @@ namespace Leitor.Document
                                     result = result.Replace((char)8232, ' '); //Remove newline
                                     if (aux[1].Equals("SplitScore"))
                                     {
-                                        var resultCortado = result.Split('-');
-                                        if (resultCortado.Length >= Convert.ToInt16(aux[3]))
-                                        {
-                                            Match m = Regex.Match(resultCortado[Convert.ToInt16(aux[3]) - 1], aux[2], RegexOptions.Singleline);
-                                            if (m.Success)
-                                                result = m.Groups[Convert.ToInt32(aux[3]) - 1].Value;
-                                            else
-                                                result = string.Empty;
-                                        }
-                                        else
-                                            result = string.Empty;
+                                        result = SplitScore(result, aux);
+                                    }
+                                    else if (aux[1].Equals("RemoveWhiteSpace"))
+                                    {
+                                        result = RemoveWhiteSpace(result, aux);
                                     }
                                     else
                                     {
@@ -413,6 +423,32 @@ namespace Leitor.Document
                 if (Prefeitura.Nome.Contains("PIRASS"))
                     result = Encoding.UTF8.GetString(Encoding.Default.GetBytes(result));
             }
+            return result.Replace((char)8232, ' ');
+        }
+
+        private string RemoveWhiteSpace(string result, string[] aux)
+        {
+            result = result.Replace(" ", "");
+            Match m = Regex.Match(result, aux[2], RegexOptions.Singleline);
+            if (m.Success)
+                return m.Groups[Convert.ToInt32(aux[3])].Value;
+            else
+                return string.Empty;
+        }
+
+        private static string SplitScore(string result, string[] aux)
+        {
+            var resultCortado = result.Split('-');
+            if (resultCortado.Length >= Convert.ToInt16(aux[3]))
+            {
+                Match m = Regex.Match(resultCortado[Convert.ToInt16(aux[3]) - 1], aux[2], RegexOptions.Singleline);
+                if (m.Success)
+                    result = m.Groups[Convert.ToInt32(aux[3]) - 1].Value;
+                else
+                    result = string.Empty;
+            }
+            else
+                result = string.Empty;
             return result;
         }
 

@@ -59,8 +59,8 @@ namespace TesteRegexPrefeitura
                     TimerCallback callbackListenReadDocumentTask = new TimerCallback(Jobs.ListenReadDocumentTask);
                     listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(30.0));
 
-                    //TimerCallback callbackListenSendDocumentTask = new TimerCallback(Jobs.ListenSendDocumentTask);
-                    //listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(60.0));
+                    TimerCallback callbackListenSendDocumentTask = new TimerCallback(Jobs.ListenSendDocumentTask);
+                    listenReadDocumentTaskTimer = new Timer(callbackListenReadDocumentTask, null, TimeSpan.Zero, TimeSpan.FromSeconds(60.0));
 
                 }
                 Console.Read();
